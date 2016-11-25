@@ -5,6 +5,9 @@
     <groupId>com.library</groupId>
     <artifactId>library-app</artifactId>
     <version>0.0.1-SNAPSHOT</version>
+    <modules>
+        <module>library-model</module>
+    </modules>
     <packaging>pom</packaging>
 
     <!-- Encoding definition using UTF-8 -->

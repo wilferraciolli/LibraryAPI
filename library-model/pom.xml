@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <!-- define the JAR to generate with the application code -->
+    <parent>
+        <artifactId>library-app</artifactId>
+        <groupId>com.library</groupId>
+        <version>0.0.1-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>library-model</artifactId>
+
+    <!-- Define the JAR to generate to test the application. This jar can be
+        used by other Maven Modules. This avoid code duplication and allow other
+        Maven modules to access the test classes from librrary-model project -->
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>test-jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+    <!-- Dependencies for test only, it will not ne shipped with the application
+        once built -->
+    <dependencies>
+        <dependency>
+            <!-- in memory database for testing -->
+            <groupId>org.hsqldb</groupId>
+            <artifactId>hsqldb</artifactId>
+            <version>2.3.2</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <!-- hibernate/persist data into in memory database -->
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-entitymanager</artifactId>
+            <version>4.3.7.Final</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <!-- Used for validation on testing -->
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-validator</artifactId>
+            <version>5.1.3.Final</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+</project>
