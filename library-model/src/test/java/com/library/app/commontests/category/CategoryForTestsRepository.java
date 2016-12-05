@@ -30,6 +30,12 @@ public class CategoryForTestsRepository {
         return new Category("Networks");
     }
 
+    // Category to return an Id, as every other categories return just names
+    public static Category categoryWithId(final Category category, final Long id) {
+        category.setId(id);
+        return category;
+    }
+
     //get all categories
     public static List<Category> allCategories() {
         return Arrays.asList(java(), cleanCode(), architecture(), networks());
