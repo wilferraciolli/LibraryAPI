@@ -45,9 +45,38 @@ public class CategoryServicesImpl implements CategoryServices {
         return categoryRepository.add(category);
     }
 
+    // method to update a category.
+    @Override
+    public void update(final Category category) {
+        // check for constraints violations
+        validateCategory(category);
 
+        // check if the category exists(validate the category ID passed to update)
+        if (!categoryRepository.existsById(category.getId())) {
+            throw new CategoryNotFoundException();
+        }
 
+        // update the category
+        categoryRepository.update(category);
+    }
 
+    // method to find a category by id.
+    @Override
+    public Category findById(final long id) throws CategoryNotFoundException {
+        final Category category = categoryRepository.findById(id);
+        if (category == null) {
+            throw new CategoryNotFoundException();
+        }
+        return category;
+    }
+
+    /**
+     * get all categories.
+     */
+    @Override
+    public List<Category> findAll() {
+        return categoryRepository.findAll(ORDERBY);
+    }
 
     /**
      * Method to to validate constraints and to check if a category already exists.

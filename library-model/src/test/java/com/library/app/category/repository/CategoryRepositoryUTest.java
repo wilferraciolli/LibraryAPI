@@ -1,4 +1,4 @@
-package com.library.app.category.model.repository;
+package com.library.app.category.repository;
 
 import com.library.app.category.model.Category;
 import com.library.app.category.repository.CategoryRepository;
