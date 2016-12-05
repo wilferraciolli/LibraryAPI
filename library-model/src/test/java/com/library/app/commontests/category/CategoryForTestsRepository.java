@@ -13,6 +13,7 @@ import java.util.List;
 @Ignore
 public class CategoryForTestsRepository {
 
+    //create a set of categories for tests
     public static Category java() {
         return new Category("Java");
     }
@@ -29,6 +30,7 @@ public class CategoryForTestsRepository {
         return new Category("Networks");
     }
 
+    //get all categories
     public static List<Category> allCategories() {
         return Arrays.asList(java(), cleanCode(), architecture(), networks());
     }
