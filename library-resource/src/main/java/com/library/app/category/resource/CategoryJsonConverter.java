@@ -60,7 +60,7 @@ public class CategoryJsonConverter {
     public JsonElement convertToJsonElement(final List<Category> categories) {
         JsonArray jsonArray = new JsonArray();
 
-        // conver5t each category into a json andd add to its array
+        // convert each category into a json and add to its array
         for (Category category : categories) {
             jsonArray.add(convertToJsonElement(category));
         }

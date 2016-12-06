@@ -139,12 +139,12 @@ public class CategoryResource {
         }
 
         // return the Operation result to the client
-        logger.debug("Returning the operation afte updating category: {}", result);
+        logger.debug("Returning the operation after updating category: {}", result);
         return Response.status(httpCode.getCode()).entity(OperationResultJsonWriter.toJson(result)).build();
     }
 
     /**
-     * method to find a category by id.
+     * Method to find a category by id.
      *
      * @param id The category id
      * @return The category object.
