@@ -59,7 +59,7 @@ public class CategoryResourceUTest {
 
         // initialize CategoryServices on category resource
         categoryResource.categoryServices = categoryServices;
-       // categoryResource.categoryJsonConverter = new CategoryJsonConverter();
+        categoryResource.categoryJsonConverter = new CategoryJsonConverter();
     }
 
     /**
