@@ -37,34 +37,34 @@ public class CategoryJsonConverter {
         return category;
     }
 
-//    /**
-//     * Method to get a java object and convert into Json object.
-//     *
-//     * @param category The java catgory object
-//     * @return The Json object (serialized)
-//     */
-//    public JsonElement convertToJsonElement(final Category category) {
-//        JsonObject jsonObject = new JsonObject();
-//        jsonObject.addProperty("id", category.getId());
-//        jsonObject.addProperty("name", category.getName());
-//
-//        return jsonObject;
-//    }
-//
-//    /**
-//     * Method to take a list of java categories object and serialise into Json.
-//     *
-//     * @param categories List of categories
-//     * @return list of categories in Json
-//     */
-//    public JsonElement convertToJsonElement(final List<Category> categories) {
-//        JsonArray jsonArray = new JsonArray();
-//
-//        // conver5t each category into a json andd add to its array
-//        for (Category category : categories) {
-//            jsonArray.add(convertToJsonElement(category));
-//        }
-//
-//        return jsonArray;
-//    }
+    /**
+     * Method to get a java object and convert into Json object.
+     *
+     * @param category The java catgory object
+     * @return The Json object (serialized)
+     */
+    public JsonElement convertToJsonElement(final Category category) {
+        JsonObject jsonObject = new JsonObject();
+        jsonObject.addProperty("id", category.getId());
+        jsonObject.addProperty("name", category.getName());
+
+        return jsonObject;
+    }
+
+    /**
+     * Method to take a list of java categories object and serialise into Json.
+     *
+     * @param categories List of categories
+     * @return list of categories in Json
+     */
+    public JsonElement convertToJsonElement(final List<Category> categories) {
+        JsonArray jsonArray = new JsonArray();
+
+        // conver5t each category into a json andd add to its array
+        for (Category category : categories) {
+            jsonArray.add(convertToJsonElement(category));
+        }
+
+        return jsonArray;
+    }
 }

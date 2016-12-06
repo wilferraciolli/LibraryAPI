@@ -97,139 +97,142 @@ public class CategoryResource {
         return Response.status(httpCode.getCode()).entity(OperationResultJsonWriter.toJson(result)).build();
     }
 
-//    /**
-//     * Method to update a category. It takes a category id and the body (Json). Then it validates it by parsing from
-//     * Json into Java object. If any exception get thrown it will be handled..
-//     *
-//     * @param id   The category id
-//     * @param body The JSON body
-//     * @return JSON response.
-//     */
-//    @PUT
-//    @Path("/{id}")
-//    public Response update(@PathParam("id") final Long id, final String body) {
-//        logger.debug("Updating the category {} with body {}", id, body);
-//
-//        // create the category object.
-//        final Category category = categoryJsonConverter.convertFrom(body);
-//        category.setId(id);
-//
-//        // define http code as success
-//        HttpCode httpCode = HttpCode.OK;
-//        OperationResult result;
-//
-//        try {
-//            categoryServices.update(category);
-//            result = OperationResult.success();
-//        } catch (FieldNotValidException e) {
-//            logger.error("One of the field oof the categoy is not valid", e);
-//            httpCode = HttpCode.VALIDATION_ERROR;
-//            result = getOperationResultInvalidField(RESOURCE_MESSAGE, e);
-//        } catch (final CategoryExistentException e) {
-//            logger.error("There is already a category for the given name", e);
-//            httpCode = HttpCode.VALIDATION_ERROR;
-//            result = getOperationResultExistent(RESOURCE_MESSAGE, "name");
-//        } catch (CategoryNotFoundException e) {
-//            logger.error("No category found for the given id", e);
-//            httpCode = HttpCode.NOT_FOUND;
-//            result = getOperationResultNotFound(RESOURCE_MESSAGE);
-//        }
-//
-//        // return the Operation result to the client
-//        logger.debug("Returning the operation afte updating category: {}", result);
-//        return Response.status(httpCode.getCode()).entity(OperationResultJsonWriter.toJson(result)).build();
-//    }
-//
-//    /**
-//     * method to find a category by id.
-//     *
-//     * @param id The category id
-//     * @return The category object.
-//     */
-//    @GET
-//    @Path("/{id}")
-//    public Response findById(@PathParam("id") final Long id) {
-//        logger.debug("Find category: {}", id);
-//
-//        // builds the response
-//        ResponseBuilder responseBuilder;
-//
-//        try {
-//            // get the category object from its id
-//            Category category = categoryServices.findById(id);
-//
-//            // convert to Json
-//            OperationResult result = OperationResult.success(categoryJsonConverter.convertToJsonElement(category));
-//            responseBuilder = Response.status(HttpCode.OK.getCode()).entity(OperationResultJsonWriter.toJson(result));
-//            logger.debug("Category found: {}", category);
-//
-//        } catch (CategoryNotFoundException e) {
-//            logger.error("No category found for id", id);
-//            responseBuilder = Response.status(HttpCode.NOT_FOUND.getCode());
-//        }
-//
-//        return responseBuilder.build();
-//    }
-//
-//    /**
-//     * Method to get all categories.
-//     *
-//     * @return All categories or empty list.
-//     */
-//    @GET
-//    public Response findAll() {
-//        logger.debug("Find all categories");
-//
-//        // get all categories
-//        List<Category> categories = categoryServices.findAll();
-//        logger.debug("Found {} categories", categories.size());
-//
-//        // get all categories and convert into json
-//        JsonElement jsonWithPagingAndEntries = getJsonElementWithPagingAndEntries(categories);
-//
-//        // return the converted json
-//        return Response.status(HttpCode.OK.getCode()).entity(JsonWriter.writeToString(jsonWithPagingAndEntries))
-//                .build();
-//    }
-//
-//    /**
-//     * Method to wrap the json into a root,This is the outter wrap pf the json response. It will count how many records
-//     * there are and display it on the response.
-//     *
-//     * @param categories The list of categories/
-//     * @return Theoutter wrap Json Root with its elements inside it.
-//     */
-//    private JsonElement getJsonElementWithPagingAndEntries(final List<Category> categories) {
-//        // Create the outter wrapper for the json response, it will be called 'paging'
-//        JsonObject jsonWithEntriesAndPaging = new JsonObject();
-//
-//        // create the property for the outter wrapper called totalRecords which will hold how many records there are
-//        JsonObject jsonPaging = new JsonObject();
-//        jsonPaging.addProperty("totalRecords", categories.size());
-//
-//        // create the order the json objects will be displayed
-//        jsonWithEntriesAndPaging.add("paging", jsonPaging);
-//        jsonWithEntriesAndPaging.add("entries", categoryJsonConverter.convertToJsonElement(categories));
-//
-//        return jsonWithEntriesAndPaging;
-//
-//        /**
-//         * Example
-//         * {
-//         * "paging": {
-//         * "totalRecords": 2
-//         * },
-//         * "entries": [
-//         * {
-//         * "id": 1,
-//         * "name": "Java"
-//         * },
-//         * {
-//         * "id": 2,
-//         * "name": "Networks"
-//         * }
-//         * ]
-//         * }
-//         */
-//    }
+    /**
+     * Method to update a category. It takes a category id and the body (Json). Then it validates it by parsing from
+     * Json into Java object. If any exception get thrown it will be handled..
+     *
+     * @param id   The category id
+     * @param body The JSON body
+     * @return JSON response.
+     */
+    @PUT
+    @Path("/{id}")
+    public Response update(@PathParam("id") final Long id, final String body) {
+        logger.debug("Updating the category {} with body {}", id, body);
+
+        // create the category object.
+        final Category category = categoryJsonConverter.convertFrom(body);
+        category.setId(id);
+
+        // define http code as success
+        HttpCode httpCode = HttpCode.OK;
+        OperationResult result;
+
+        try {
+            categoryServices.update(category);
+            result = OperationResult.success();
+
+        } catch (FieldNotValidException e) {
+            logger.error("One of the field of the category is not valid", e);
+            httpCode = HttpCode.VALIDATION_ERROR;
+            result = getOperationResultInvalidField(RESOURCE_MESSAGE, e);
+
+        } catch (final CategoryExistentException e) {
+            logger.error("There is already a category for the given name", e);
+            httpCode = HttpCode.VALIDATION_ERROR;
+            result = getOperationResultExistent(RESOURCE_MESSAGE, "name");
+
+        } catch (CategoryNotFoundException e) {
+            logger.error("No category found for the given id", e);
+            httpCode = HttpCode.NOT_FOUND;
+            result = getOperationResultNotFound(RESOURCE_MESSAGE);
+        }
+
+        // return the Operation result to the client
+        logger.debug("Returning the operation afte updating category: {}", result);
+        return Response.status(httpCode.getCode()).entity(OperationResultJsonWriter.toJson(result)).build();
+    }
+
+    /**
+     * method to find a category by id.
+     *
+     * @param id The category id
+     * @return The category object.
+     */
+    @GET
+    @Path("/{id}")
+    public Response findById(@PathParam("id") final Long id) {
+        logger.debug("Find category: {}", id);
+
+        // builds the response
+        ResponseBuilder responseBuilder;
+
+        try {
+            // get the category object from its id
+            Category category = categoryServices.findById(id);
+
+            // convert to Json
+            OperationResult result = OperationResult.success(categoryJsonConverter.convertToJsonElement(category));
+            responseBuilder = Response.status(HttpCode.OK.getCode()).entity(OperationResultJsonWriter.toJson(result));
+            logger.debug("Category found: {}", category);
+
+        } catch (CategoryNotFoundException e) {
+            logger.error("No category found for id", id);
+            responseBuilder = Response.status(HttpCode.NOT_FOUND.getCode());
+        }
+
+        return responseBuilder.build();
+    }
+
+    /**
+     * Method to get all categories.
+     *
+     * @return All categories or empty list.
+     */
+    @GET
+    public Response findAll() {
+        logger.debug("Find all categories");
+
+        // get all categories
+        List<Category> categories = categoryServices.findAll();
+        logger.debug("Found {} categories", categories.size());
+
+        // get all categories and convert into json
+        JsonElement jsonWithPagingAndEntries = getJsonElementWithPagingAndEntries(categories);
+
+        // return the converted json
+        return Response.status(HttpCode.OK.getCode()).entity(JsonWriter.writeToString(jsonWithPagingAndEntries))
+                .build();
+    }
+
+    /**
+     * Method to wrap the json into a root,This is the outter wrap pf the json response. It will count how many records
+     * there are and display it on the response.
+     *
+     * @param categories The list of categories/
+     * @return Theoutter wrap Json Root with its elements inside it.
+     */
+    private JsonElement getJsonElementWithPagingAndEntries(final List<Category> categories) {
+        // Create the outter wrapper for the json response, it will be called 'paging'
+        JsonObject jsonWithEntriesAndPaging = new JsonObject();
+
+        // create the property for the outter wrapper called totalRecords which will hold how many records there are
+        JsonObject jsonPaging = new JsonObject();
+        jsonPaging.addProperty("totalRecords", categories.size());
+
+        // create the order the json objects will be displayed
+        jsonWithEntriesAndPaging.add("paging", jsonPaging);
+        jsonWithEntriesAndPaging.add("entries", categoryJsonConverter.convertToJsonElement(categories));
+
+        return jsonWithEntriesAndPaging;
+
+        /**
+         * Example
+         * {
+         * "paging": {
+         * "totalRecords": 2
+         * },
+         * "entries": [
+         * {
+         * "id": 1,
+         * "name": "Java"
+         * },
+         * {
+         * "id": 2,
+         * "name": "Networks"
+         * }
+         * ]
+         * }
+         */
+    }
 }

@@ -4,7 +4,7 @@ import com.google.gson.JsonObject;
 import com.library.app.common.model.OperationResult;
 
 /**
- * Class to write the operation result.
+ * Class to write the operation result. It checks if the operation was successfull and return the json, otherwise it returns the json error message.
  *
  * @author wilferaciolli
  */
@@ -24,7 +24,6 @@ public class OperationResultJsonWriter {
      * @return The operation result.
      */
     public static String toJson(final OperationResult operationResult) {
-
         // check if the operation result was empty by calling JsonWriter.writeToString
         return JsonWriter.writeToString(getJsonObject(operationResult));
     }
@@ -54,7 +53,7 @@ public class OperationResultJsonWriter {
     /**
      * Get operation entity result if the JSON conversion was errored. Get the error message code and description.
      *
-     * @param operationResult
+     * @param operationResult The operation result
      * @return Json conversion errored
      */
     private static JsonObject getJsonError(final OperationResult operationResult) {

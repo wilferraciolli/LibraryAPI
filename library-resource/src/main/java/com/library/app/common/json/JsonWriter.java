@@ -7,7 +7,6 @@ import com.google.gson.Gson;
  * private methods. It takes a json object and writes it to a string.
  *
  * @author wilferaciolli
- *
  */
 public final class JsonWriter {
 
@@ -21,8 +20,7 @@ public final class JsonWriter {
     /**
      * Method to get a Json content and write it to a String.
      *
-     * @param object
-     *            The json object.
+     * @param object The json object.
      * @return
      */
     public static String writeToString(final Object object) {
