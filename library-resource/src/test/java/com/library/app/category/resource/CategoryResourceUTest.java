@@ -20,6 +20,7 @@ import java.util.Arrays;
 
 import javax.ws.rs.core.Response;
 
+import com.library.app.common.model.HttpCode;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -73,43 +74,42 @@ public class CategoryResourceUTest {
                 .add(readJsonFile(getPathFileRequest(PATH_RESOURCE, "newCategory.json")));
 
         // assertions
-        assertThat(response.getStatus(), is(equalTo(201)));
-//        assertThat(response.getStatus(), is(equalTo(HttpCode.CREATED.getCode())));
+        assertThat(response.getStatus(), is(equalTo(HttpCode.CREATED.getCode())));
         assertJsonMatchesExpectedJson(response.getEntity().toString(), "{\"id\": 1}");
     }
 
-//    /**
-//     * test to add an existing category.
-//     */
-//    @Test
-//    public void addExistingCategory() {
-//        // mock the return value to thrown category existing exception
-//        when(categoryServices.add(java())).thenThrow(new CategoryExistentException());
-//
-//        final Response response = categoryResource
-//                .add(readJsonFile(getPathFileRequest(PATH_RESOURCE, "newCategory.json")));
-//
-//        // assertions
-//        assertThat(response.getStatus(), is(equalTo(HttpCode.VALIDATION_ERROR.getCode())));
-//        assertJsonResponseWithFile(response, "categoryAlreadyExists.json");
-//    }
-//
-//    /**
-//     * test to add a category with null name.
-//     */
-//    @Test
-//    public void addCategoryWithNullName() {
-//        // mock the return value to thrown category existing exception
-//        when(categoryServices.add(new Category())).thenThrow(new FieldNotValidException("name", "may not be null"));
-//
-//        final Response response = categoryResource
-//                .add(readJsonFile(getPathFileRequest(PATH_RESOURCE, "categoryWithNullName.json")));
-//
-//        // assertions
-//        assertThat(response.getStatus(), is(equalTo(HttpCode.VALIDATION_ERROR.getCode())));
-//        assertJsonResponseWithFile(response, "categoryErrorNullName.json");
-//    }
-//
+    /**
+     * test to add an existing category.
+     */
+    @Test
+    public void addExistingCategory() {
+        // mock the return value to thrown category existing exception
+        when(categoryServices.add(java())).thenThrow(new CategoryExistentException());
+
+        final Response response = categoryResource
+                .add(readJsonFile(getPathFileRequest(PATH_RESOURCE, "newCategory.json")));
+
+        // assertions
+        assertThat(response.getStatus(), is(equalTo(HttpCode.VALIDATION_ERROR.getCode())));
+        assertJsonResponseWithFile(response, "categoryAlreadyExists.json");
+    }
+
+    /**
+     * test to add a category with null name.
+     */
+    @Test
+    public void addCategoryWithNullName() {
+        // mock the return value to thrown category existing exception
+        when(categoryServices.add(new Category())).thenThrow(new FieldNotValidException("name", "may not be null"));
+
+        final Response response = categoryResource
+                .add(readJsonFile(getPathFileRequest(PATH_RESOURCE, "categoryWithNullName.json")));
+
+        // assertions
+        assertThat(response.getStatus(), is(equalTo(HttpCode.VALIDATION_ERROR.getCode())));
+        assertJsonResponseWithFile(response, "categoryErrorNullName.json");
+    }
+
 //    /**
 //     * Updates a valid category. Uses verify mock.
 //     */
@@ -218,13 +218,12 @@ public class CategoryResourceUTest {
 //        assertThat(response.getStatus(), is(equalTo(HttpCode.OK.getCode())));
 //        assertJsonResponseWithFile(response, "twoCategories.json");
 //    }
-//
-//    /**
-//     * Helper method to compare REST responses to Json files content. Files in src/test/resources contains error
-//     * messages
-//     * that will be compared agains Json responses.
-//     */
-//    private void assertJsonResponseWithFile(final Response response, final String fileName) {
-//        assertJsonMatchesFileContent(response.getEntity().toString(), getPathFileResponse(PATH_RESOURCE, fileName));
-//    }
+
+    /**
+     * Helper method to compare REST responses to Json files content. Files in src/test/resources contains error
+     * messages that will be compared against Json responses.
+     */
+    private void assertJsonResponseWithFile(final Response response, final String fileName) {
+        assertJsonMatchesFileContent(response.getEntity().toString(), getPathFileResponse(PATH_RESOURCE, fileName));
+    }
 }

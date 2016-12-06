@@ -53,8 +53,8 @@ public class JsonTestUtils {
      * Method to compare the JSON file content. It compare if both JSON passed are the same, it checks for the content
      * and the number of fields.
      *
-     * @param actualJson   The Json read from the file. *
-     * @param expectedJson The json expected to be.
+     * @param actualJson   The json expected to be.
+     * @param expectedJson The Json read from the file. *
      */
     public static void assertJsonMatchesExpectedJson(final String actualJson, final String expectedJson) {
         try {
