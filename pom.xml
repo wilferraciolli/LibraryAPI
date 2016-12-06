@@ -7,6 +7,7 @@
     <version>0.0.1-SNAPSHOT</version>
     <modules>
         <module>library-model</module>
+        <module>library-resource</module>
     </modules>
     <packaging>pom</packaging>
 
@@ -113,17 +114,17 @@
             </dependency>
 
             <!--  Add library-resource jar file, for test resources -->
-            <dependency>
-                <groupId>com.library</groupId>
-                <artifactId>library-resource</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.library</groupId>
-                <artifactId>library-resource</artifactId>
-                <version>${project.version}</version>
-                <type>test-jar</type>
-            </dependency>
+            <!--<dependency>-->
+                <!--<groupId>com.library</groupId>-->
+                <!--<artifactId>library-resource</artifactId>-->
+                <!--<version>${project.version}</version>-->
+            <!--</dependency>-->
+            <!--<dependency>-->
+                <!--<groupId>com.library</groupId>-->
+                <!--<artifactId>library-resource</artifactId>-->
+                <!--<version>${project.version}</version>-->
+                <!--<type>test-jar</type>-->
+            <!--</dependency>-->
 
         </dependencies>
     </dependencyManagement>
@@ -181,10 +182,10 @@
         </dependency>
     </dependencies>
 
-    <!-- Aditional modules -->
+    <!-- Additional modules -->
     <!--<modules>-->
         <!--<module>library-model</module>-->
         <!--<module>library-resource</module>-->
-        <!--<module>library-int-tests</module>-->
+        <!--&lt;!&ndash;<module>library-int-tests</module>&ndash;&gt;-->
     <!--</modules>-->
 </project>

@@ -4,7 +4,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <!-- define the JAR to generate with the application code -->
+    <!-- Define the JAR to generate with the application code -->
     <parent>
         <artifactId>library-app</artifactId>
         <groupId>com.library</groupId>
@@ -15,7 +15,7 @@
 
     <!-- Define the JAR to generate to test the application. This jar can be
         used by other Maven Modules. This avoid code duplication and allow other
-        Maven modules to access the test classes from librrary-model project -->
+        Maven modules to access the test classes from library-model project -->
     <build>
         <plugins>
             <plugin>
