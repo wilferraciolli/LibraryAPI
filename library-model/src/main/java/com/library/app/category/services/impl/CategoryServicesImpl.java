@@ -17,7 +17,7 @@ import com.library.app.category.services.CategoryServices;
 import com.library.app.common.exception.FieldNotValidException;
 
 /**
- * implementation class for Category services interface. This is a stateless class that invokes method on its Local
+ * Implementation class for Category services interface. This is a stateless class that invokes method on its Local
  * interface.
  *
  * @author wilferaciolli

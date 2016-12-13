@@ -11,7 +11,7 @@ import com.library.app.common.exception.FieldNotValidException;
 
 /**
  * Interface to define methods that Category Service will have. This is a local interface that can only be invoked by
- * another class in the same package. Normally a Stateless class.
+ * another class in the same container. Normally a Stateless class.
  *
  * @author wilferaciolli
  */

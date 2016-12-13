@@ -3,6 +3,7 @@ package com.library.app.commontests.utils;
 import java.io.InputStream;
 import java.util.Scanner;
 
+import com.library.app.common.json.JsonReader;
 import org.json.JSONException;
 import org.junit.Ignore;
 import org.skyscreamer.jsonassert.JSONAssert;
@@ -64,14 +65,14 @@ public class JsonTestUtils {
         }
     }
 
-//    /**
-//     * Method to extract id from an json object.
-//     *
-//     * @param json The json.
-//     * @return The id extracted from the json.
-//     */
-//    public static Long getIdFromJson(final String json) {
-//        final JsonObject jsonObject = JsonReader.readAsJsonObject(json);
-//        return JsonReader.getLongOrNull(jsonObject, "id");
-//    }
+    /**
+     * Method to extract id from an json object.
+     *
+     * @param json The json.
+     * @return The id extracted from the json.
+     */
+    public static Long getIdFromJson(final String json) {
+        final JsonObject jsonObject = JsonReader.readAsJsonObject(json);
+        return JsonReader.getLongOrNull(jsonObject, "id");
+    }
 }

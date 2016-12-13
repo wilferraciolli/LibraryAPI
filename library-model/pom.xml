@@ -32,8 +32,7 @@
         </plugins>
     </build>
 
-    <!-- Dependencies for test only, it will not ne shipped with the application
-        once built -->
+    <!-- Dependencies for test only, it will not ne shipped with the application once built -->
     <dependencies>
         <dependency>
             <!-- in memory database for testing -->

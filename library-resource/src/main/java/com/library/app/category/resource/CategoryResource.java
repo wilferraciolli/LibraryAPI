@@ -36,7 +36,7 @@ import com.library.app.common.model.OperationResult;
 import com.library.app.common.model.ResourceMessage;
 
 /**
- * Class to implement category resource.
+ * Class to implement category resource RESTful service.
  *
  * @author wilferaciolli
  */
@@ -203,7 +203,7 @@ public class CategoryResource {
      * @return Theoutter wrap Json Root with its elements inside it.
      */
     private JsonElement getJsonElementWithPagingAndEntries(final List<Category> categories) {
-        // Create the outter wrapper for the json response, it will be called 'paging'
+        // Create the outer wrapper for the json response, it will be called 'paging'
         JsonObject jsonWithEntriesAndPaging = new JsonObject();
 
         // create the property for the outter wrapper called totalRecords which will hold how many records there are

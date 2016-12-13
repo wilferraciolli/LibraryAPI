@@ -2,6 +2,7 @@ package com.library.app.category.repository;
 
 import com.library.app.category.model.Category;
 
+import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 import java.util.List;
@@ -12,6 +13,7 @@ import java.util.List;
  *
  * @author wilferaciolli
  */
+@Stateless
 public class CategoryRepository {
 
     //set the entity manager
