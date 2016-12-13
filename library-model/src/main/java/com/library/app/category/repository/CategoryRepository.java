@@ -4,6 +4,7 @@ import com.library.app.category.model.Category;
 
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import java.util.List;
 
@@ -16,7 +17,8 @@ import java.util.List;
 @Stateless
 public class CategoryRepository {
 
-    //set the entity manager
+    //set the entity manager and inject it
+    @PersistenceContext
     public EntityManager em;
 
     /**
