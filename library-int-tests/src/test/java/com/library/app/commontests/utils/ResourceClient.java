@@ -34,7 +34,7 @@ public class ResourceClient {
         return this;
     }
 
-    // Post a file by passing its name- create  category from a file
+    // Post a file by passing its name- create category from a file
     public Response postWithFile(final String fileName) {
         return postWithContent(getRequestFromFileOrEmptyIfNullFile(fileName));
     }
@@ -44,13 +44,24 @@ public class ResourceClient {
         return buildClient().post(Entity.entity(content, MediaType.APPLICATION_JSON));
     }
 
+    //Update a file by passing its name - update category from a file
+    public Response putWithFile(String fileName) {
+        return putWithContent(getRequestFromFileOrEmptyIfNullFile(fileName));
+    }
+
+    //Update a file by passing its content - update category from content
+    public Response putWithContent(String content) {
+        return buildClient().put(Entity.entity(content, MediaType.APPLICATION_JSON));
+    }
+
     //get method
     public Response get() {
         return buildClient().get();
     }
 
     /**
-     *   Using jax.rs.client to create requests for testing.
+     * Using jax.rs.client to create requests for testing.
+     *
      * @return The Client.
      */
     private Builder buildClient() {
@@ -72,4 +83,6 @@ public class ResourceClient {
         }
         return readJsonFile(fileName);
     }
+
+
 }

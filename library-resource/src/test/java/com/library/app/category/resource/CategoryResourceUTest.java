@@ -21,6 +21,7 @@ import java.util.Arrays;
 import javax.ws.rs.core.Response;
 
 import com.library.app.common.model.HttpCode;
+import com.library.app.commontests.utils.ResourceDefinitions;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -44,7 +45,7 @@ public class CategoryResourceUTest {
     private CategoryResource categoryResource;
 
     // path to the folder where the JSON file is
-    private static final String PATH_RESOURCE = "categories";
+    private static final String PATH_RESOURCE = ResourceDefinitions.CATEGORY.getResourceName();
 
     @Mock
     private CategoryServices categoryServices;

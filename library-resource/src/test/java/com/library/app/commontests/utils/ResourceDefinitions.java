@@ -3,7 +3,7 @@ package com.library.app.commontests.utils;
 import org.junit.Ignore;
 
 /**
- * Enum to hold the name of resources that will be accessed by Arquilian.
+ * Enum to hold the name of resources that will be accessed by Arquillian.
  *
  * @author wilferaciolli
  *
