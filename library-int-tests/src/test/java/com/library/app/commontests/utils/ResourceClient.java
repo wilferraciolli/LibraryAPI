@@ -54,6 +54,11 @@ public class ResourceClient {
         return buildClient().put(Entity.entity(content, MediaType.APPLICATION_JSON));
     }
 
+    //Call the delete method endpoint to clear out the database
+    public void delete() {
+        buildClient().delete();
+    }
+
     //get method
     public Response get() {
         return buildClient().get();
@@ -83,6 +88,4 @@ public class ResourceClient {
         }
         return readJsonFile(fileName);
     }
-
-
 }

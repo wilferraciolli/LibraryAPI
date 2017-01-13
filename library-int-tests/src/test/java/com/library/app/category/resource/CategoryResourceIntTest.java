@@ -1,5 +1,6 @@
 package com.library.app.category.resource;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.library.app.category.model.Category;
 import com.library.app.common.json.JsonReader;
@@ -23,9 +24,8 @@ import javax.ws.rs.core.Response;
 import java.io.File;
 import java.net.URL;
 
-import static com.library.app.commontests.category.CategoryForTestsRepository.cleanCode;
+import static com.library.app.commontests.category.CategoryForTestsRepository.*;
 import static com.library.app.commontests.utils.JsonTestUtils.assertJsonMatchesFileContent;
-import static com.library.app.commontests.category.CategoryForTestsRepository.java;
 import static com.library.app.commontests.utils.FileTestNameUtils.getPathFileRequest;
 import static com.library.app.commontests.utils.FileTestNameUtils.getPathFileResponse;
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -77,11 +77,16 @@ public class CategoryResourceIntTest {
     }
 
     /**
-     * Method to define a new Client base url. It runs before each test method.
+     * Method to define a new Client base url and clean up the database.
+     * It runs before each test method.
      */
     @Before
     public void initTestCase() {
+        //instantiate the resource client
         this.resourceClient = new ResourceClient(url);
+
+        //clean the database
+        resourceClient.resourcePath("/DB").delete();
     }
 
     /**
@@ -91,7 +96,7 @@ public class CategoryResourceIntTest {
     @RunAsClient
     public void addValidCategoryAndFindIt() {
         //add the category and get the id from it after created
-        final Long id = addCategoryAndGetId( "category.json");
+        final Long id = addCategoryAndGetId("category.json");
 
         //find the category and compare to see if it is the expected value
         findCategoryAndAssertResponseWithCategory(id, java());
@@ -200,6 +205,53 @@ public class CategoryResourceIntTest {
     }
 
     /**
+     * Method to test find all categories from the database.
+     */
+    @Test
+    @RunAsClient
+    public void findAllCategories() {
+        //create all categories on the database
+        resourceClient.resourcePath("DB/" + PATH_RESOURCE).postWithContent("");
+
+        //get all categories
+        final Response response = resourceClient.resourcePath(PATH_RESOURCE).get();
+
+        //assert that it was a success response
+        assertThat(response.getStatus(), is(equalTo(HttpCode.OK.getCode())));
+
+        //assert that the response contains the expected categories
+        assertResponseContainsTheCategories(response, 4, architecture(), cleanCode(), java(), networks());
+    }
+
+    /**
+     * Method to assert that the response contains all the expected categories.
+     *
+     * @param response             The response.
+     * @param expectedTotalRecords The expected total records.
+     * @param expectedCategories   The expected categories.
+     */
+    private void assertResponseContainsTheCategories(final Response response, final int expectedTotalRecords,
+                                                     final Category... expectedCategories) {
+        //convert the response into a Json object
+        final JsonObject result = JsonReader.readAsJsonObject(response.readEntity(String.class));
+
+        //get the number of records from the response and assert it agains the pagination number of records
+        final int totalRecords = result.getAsJsonObject("paging").get("totalRecords").getAsInt();
+        assertThat(totalRecords, is(equalTo(expectedTotalRecords)));
+
+        //get the expected number of categories and compare against the response
+        final JsonArray categoriesList = result.getAsJsonArray("entries");
+        assertThat(categoriesList.size(), is(equalTo(expectedCategories.length)));
+
+        //compare the name of each category to see if they match the expected names
+        for (int i = 0; i < expectedCategories.length; i++) {
+            final Category expectedCategory = expectedCategories[i];
+            assertThat(categoriesList.get(i).getAsJsonObject().get("name").getAsString(),
+                    is(equalTo(expectedCategory.getName())));
+        }
+    }
+
+    /**
      * Method to call the integration helper method to instantiate the resource client, make the calls and return the response.
      *
      * @param fileName The file name to read from.
@@ -221,8 +273,9 @@ public class CategoryResourceIntTest {
 
     /**
      * Method to call the integration helper class to get a category and compare if it is as expected.
+     *
      * @param categoryIdToBeFound The category id to get.
-     * @param expectedCategory Expected category.
+     * @param expectedCategory    Expected category.
      */
     private void findCategoryAndAssertResponseWithCategory(final Long categoryIdToBeFound,
                                                            final Category expectedCategory) {
