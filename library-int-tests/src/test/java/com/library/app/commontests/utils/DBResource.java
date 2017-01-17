@@ -6,8 +6,8 @@ import javax.ws.rs.DELETE;
 import javax.ws.rs.Path;
 
 /**
- * Helper class to send requests to the server (as a client) to manage the database.
- * Eg to clean the database when runnning integration tests.
+ * Helper class to manage the database. It is used to clean the database and can be called by ta client.
+ * Eg to clean the database when running integration tests.
  * Created by wilferaciolli on 13/01/2017.
  */
 @Path("/DB")

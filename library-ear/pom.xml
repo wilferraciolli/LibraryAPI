@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <!-- This Module is the one responsible for packaging the whole application, every dependency should be packaged here
+    and not in the library-resource-war module -->
+    <parent>
+        <artifactId>library-app</artifactId>
+        <groupId>com.library</groupId>
+        <version>0.0.1-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>library-ear</artifactId>
+    <packaging>ear</packaging>
+
+    <!-- dependencies, which need to also be declared on the main POM file -->
+    <dependencies>
+        <dependency>
+            <groupId>com.library</groupId>
+            <artifactId>library-model</artifactId>
+            <type>ejb</type>
+        </dependency>
+        <dependency>
+            <groupId>com.library</groupId>
+            <artifactId>library-resource-war</artifactId>
+            <type>war</type>
+        </dependency>
+        <dependency>
+            <groupId>com.library</groupId>
+            <artifactId>library-resource-war</artifactId>
+            <type>pom</type>
+        </dependency>
+    </dependencies>
+
+    <!-- Define the build -->
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-ear-plugin</artifactId>
+                <configuration>
+                    <!-- default library folder to add all the libraries -->
+                    <defaultLibBundleDir>lib/</defaultLibBundleDir>
+                    <!-- light war file, WAR with no dependencies -->
+                    <skinnyWars>true</skinnyWars>
+                    <modules>
+                        <!-- Modules - WEB and EJB -->
+                        <webModule>
+                            <groupId>com.library</groupId>
+                            <artifactId>library-resource-war</artifactId>
+                            <!-- URL to where to access the resources -->
+                            <contextRoot>/library</contextRoot>
+                        </webModule>
+                        <ejbModule>
+                            <groupId>com.library</groupId>
+                            <artifactId>library-model</artifactId>
+                        </ejbModule>
+                    </modules>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>

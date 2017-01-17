@@ -235,7 +235,7 @@ public class CategoryResourceIntTest {
         //convert the response into a Json object
         final JsonObject result = JsonReader.readAsJsonObject(response.readEntity(String.class));
 
-        //get the number of records from the response and assert it agains the pagination number of records
+        //get the number of records from the response and assert it against the pagination number of records
         final int totalRecords = result.getAsJsonObject("paging").get("totalRecords").getAsInt();
         assertThat(totalRecords, is(equalTo(expectedTotalRecords)));
 
