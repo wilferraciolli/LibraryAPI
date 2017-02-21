@@ -19,7 +19,7 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-war-plugin</artifactId>
                 <configuration>
-                    <!-- Excludes everything within WEB_INF folder -->
+                    <!-- Excludes everything within WEB-INF folder -->
                     <packagingExcludes>WEB-INF/lib/*.jar</packagingExcludes>
                     <archive>
                         <manifest>
