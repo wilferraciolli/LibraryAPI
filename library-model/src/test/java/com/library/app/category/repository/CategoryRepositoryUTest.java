@@ -1,34 +1,32 @@
 package com.library.app.category.repository;
 
 import com.library.app.category.model.Category;
-import com.library.app.category.repository.CategoryRepository;
-import com.library.app.commontests.utils.DBCommandTransactionExecutor;
+import com.library.app.commontests.utils.TestBaseRepository;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
 import java.util.List;
 
-import static com.library.app.commontests.category.CategoryForTestsRepository.*;
-import static org.hamcrest.CoreMatchers.*;
+import static com.library.app.commontests.category.CategoryForTestsRepository.allCategories;
+import static com.library.app.commontests.category.CategoryForTestsRepository.architecture;
+import static com.library.app.commontests.category.CategoryForTestsRepository.cleanCode;
+import static com.library.app.commontests.category.CategoryForTestsRepository.java;
+import static com.library.app.commontests.category.CategoryForTestsRepository.networks;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertThat;
 
 /**
  * Unit test for Repository.
  * Created by wilferaciolli on 25/11/2016.
  */
-public class CategoryRepositoryUTest {
+public class CategoryRepositoryUTest extends TestBaseRepository {
 
     //declare entity manager for repository tests
-    private EntityManagerFactory emf;
-    private EntityManager em;
     private CategoryRepository categoryRepository;
-
-    //add object executor
-    private DBCommandTransactionExecutor dBCommandTransactionExecutor;
 
     /**
      * Set up tests. This method will create a entity manager for running tests. The persisntence unit is declare in src/test/resources/META-INF/persistence.xml
@@ -36,25 +34,19 @@ public class CategoryRepositoryUTest {
     @Before
     public void iniTestCase() {
         //declare the persistence unit
-        emf = Persistence.createEntityManagerFactory("libraryPU");
-        em = emf.createEntityManager();
+        initializeTestDB();
 
         //instantiate the entity manager
         categoryRepository = new CategoryRepository();
         categoryRepository.em = em;
-
-        //manage try and catch for entity manager
-        dBCommandTransactionExecutor = new DBCommandTransactionExecutor(em);
     }
 
     /**
      * Tear down method.
      */
     @After
-    public void closeEntityManager() {
-        //tear down the entity manager
-        em.close();
-        emf.close();
+    public void setDownTestCase() {
+        closeEntityManager();
     }
 
     /**
@@ -64,7 +56,7 @@ public class CategoryRepositoryUTest {
     @Test
     public void addCategoryAndFindIt() {
         //Call DBCommandTransaction instead of creating the transaction with a try and catch
-        Long categoryAddedId = dBCommandTransactionExecutor.executeCommand(() -> {
+        final Long categoryAddedId = dbCommandExecutor.executeCommand(() -> {
             return categoryRepository.add(java()).getId();
         });
 
@@ -121,7 +113,7 @@ public class CategoryRepositoryUTest {
     @Test
     public void updateCategory() {
         // add a category
-        final Long categoryAddedId = dBCommandTransactionExecutor.executeCommand(() -> {
+        final Long categoryAddedId = dbCommandExecutor.executeCommand(() -> {
             return categoryRepository.add(java()).getId();
         });
 
@@ -131,7 +123,7 @@ public class CategoryRepositoryUTest {
 
         // update its values
         categoryAfterAdd.setName(cleanCode().getName());
-        dBCommandTransactionExecutor.executeCommand(() -> {
+        dbCommandExecutor.executeCommand(() -> {
             categoryRepository.update(categoryAfterAdd);
             return null;
         });
@@ -147,7 +139,7 @@ public class CategoryRepositoryUTest {
     @Test
     public void findAllCategories() {
         // add every element from the allCategories list to the database
-        dBCommandTransactionExecutor.executeCommand(() -> {
+        dbCommandExecutor.executeCommand(() -> {
             // Code in Java 7
             // for (final Category category : allCategories()) {
             // categoryRepository.add(category);
@@ -178,7 +170,7 @@ public class CategoryRepositoryUTest {
     public void alreadyExistsForAdd() {
 
         // Add a category to the database.
-        dBCommandTransactionExecutor.executeCommand(() -> {
+        dbCommandExecutor.executeCommand(() -> {
             categoryRepository.add(java());
             return null;
         });
@@ -195,7 +187,7 @@ public class CategoryRepositoryUTest {
     public void alreadyExistsCategoryWithId() {
 
         // Add two categories to the database (cleanCode and java) and assign java category
-        final Category java = dBCommandTransactionExecutor.executeCommand(() -> {
+        final Category java = dbCommandExecutor.executeCommand(() -> {
             categoryRepository.add(cleanCode());
             return categoryRepository.add(java());
         });
@@ -219,7 +211,7 @@ public class CategoryRepositoryUTest {
     @Test
     public void existsById() {
         // Add a category to the database and get its ID
-        final Long categoryAddedId = dBCommandTransactionExecutor.executeCommand(() -> {
+        final Long categoryAddedId = dbCommandExecutor.executeCommand(() -> {
             return categoryRepository.add(java()).getId();
         });
 

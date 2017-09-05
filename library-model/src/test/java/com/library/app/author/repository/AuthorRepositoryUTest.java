@@ -4,14 +4,10 @@ import com.library.app.author.model.Author;
 import com.library.app.author.model.filter.AuthorFilter;
 import com.library.app.common.model.PaginatedData;
 import com.library.app.common.model.filter.PaginationData;
-import com.library.app.commontests.utils.DBCommandTransactionExecutor;
+import com.library.app.commontests.utils.TestBaseRepository;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
 
 import static com.library.app.commontests.author.AuthorForTestsRepository.erichGamma;
 import static com.library.app.commontests.author.AuthorForTestsRepository.jamesGosling;
@@ -27,12 +23,9 @@ import static org.junit.Assert.assertThat;
  * Unit tests for Author Repository.
  * Created by wilferaciolli on 21/02/2017.
  */
-public class AuthorRepositoryUTest {
+public class AuthorRepositoryUTest extends TestBaseRepository {
 
     //Declare entity manager
-    private EntityManagerFactory emf;
-    private EntityManager em;
-    private DBCommandTransactionExecutor dbCommandExecutor;
     private AuthorRepository authorRepository;
 
     /**
@@ -40,22 +33,18 @@ public class AuthorRepositoryUTest {
      */
     @Before
     public void initTestsCase() {
-        emf = Persistence.createEntityManagerFactory("libraryPU");
-        em = emf.createEntityManager();
+        initializeTestDB();
 
         authorRepository = new AuthorRepository();
         authorRepository.em = em;
-
-        dbCommandExecutor = new DBCommandTransactionExecutor(em);
     }
 
     /**
      * Clear down and close entity manager.
      */
     @After
-    public void closeEntityManager() {
-        em.close();
-        emf.close();
+    public void setDownTestCase() {
+        closeEntityManager();
     }
 
     /**
