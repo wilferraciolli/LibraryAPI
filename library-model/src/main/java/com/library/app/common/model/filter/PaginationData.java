@@ -28,9 +28,9 @@ public class PaginationData {
     /**
      * Constructor to take all the values.
      *
-     * @param firstResult The first result.
-     * @param maxResults  The max result.
-     * @param orderField  The order Field.
+     * @param firstResult The first result. If the pagination brought back 10 results of the first call, then its value should be 11 for the next call
+     * @param maxResults  The max result. The max number of rows to bring back
+     * @param orderField  The order Field. The order colun name
      * @param orderMode   The order mode enum.
      */
     public PaginationData(final int firstResult, final int maxResults, final String orderField,

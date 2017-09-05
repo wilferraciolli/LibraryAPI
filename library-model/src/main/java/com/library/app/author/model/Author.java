@@ -1,6 +1,10 @@
 package com.library.app.author.model;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
@@ -30,37 +34,63 @@ public class Author implements Serializable {
 
     /**
      * Default constructor to take parameters.
-
+     *
      * @param name The author name.
      */
-    public Author( String name) {
+    public Author(final String name) {
         this.name = name;
     }
 
+    /**
+     * Gets id.
+     *
+     * @return the id
+     */
     public Long getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    /**
+     * Sets id.
+     *
+     * @param id the id
+     */
+    public void setId(final Long id) {
         this.id = id;
     }
 
+    /**
+     * Gets name.
+     *
+     * @return the name
+     */
     public String getName() {
         return name;
     }
 
-    public void setName(String name) {
+    /**
+     * Sets name.
+     *
+     * @param name the name
+     */
+    public void setName(final String name) {
         this.name = name;
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+    public boolean equals(final Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
 
-        Author author = (Author) o;
+        final Author author = (Author) o;
 
-        if (id != null ? !id.equals(author.id) : author.id != null) return false;
+        if (id != null ? !id.equals(author.id) : author.id != null) {
+            return false;
+        }
         return name != null ? name.equals(author.name) : author.name == null;
     }
 
