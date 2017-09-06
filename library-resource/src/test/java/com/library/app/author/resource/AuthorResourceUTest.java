@@ -2,18 +2,27 @@ package com.library.app.author.resource;
 
 import com.library.app.author.exception.AuthorNotFoundException;
 import com.library.app.author.model.Author;
+import com.library.app.author.model.filter.AuthorFilter;
 import com.library.app.author.services.AuthorServices;
 import com.library.app.common.exception.FieldNotValidException;
 import com.library.app.common.model.HttpCode;
+import com.library.app.common.model.PaginatedData;
 import com.library.app.commontests.utils.ResourceDefinitions;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriInfo;
+import java.util.Arrays;
+import java.util.List;
 
 import static com.library.app.commontests.author.AuthorForTestsRepository.authorWithId;
+import static com.library.app.commontests.author.AuthorForTestsRepository.erichGamma;
+import static com.library.app.commontests.author.AuthorForTestsRepository.jamesGosling;
+import static com.library.app.commontests.author.AuthorForTestsRepository.martinFowler;
 import static com.library.app.commontests.author.AuthorForTestsRepository.robertMartin;
 import static com.library.app.commontests.utils.FileTestNameUtils.getPathFileRequest;
 import static com.library.app.commontests.utils.FileTestNameUtils.getPathFileResponse;
@@ -25,6 +34,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.anyObject;
 import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -42,6 +52,9 @@ public class AuthorResourceUTest {
     @Mock
     private AuthorServices authorServices;
 
+    @Mock
+    private UriInfo uriInfo;
+
     /**
      * Init test case.
      */
@@ -53,6 +66,7 @@ public class AuthorResourceUTest {
         //initialize mocks
         authorResource.authorServices = authorServices;
         authorResource.authorJsonConverter = new AuthorJsonConverter();
+        authorResource.uriInfo = uriInfo;
     }
 
     /**
@@ -154,6 +168,25 @@ public class AuthorResourceUTest {
         final Response response = authorResource.findById(1L);
         assertThat(response.getStatus(), is(equalTo(HttpCode.NOT_FOUND.getCode())));
     }
+
+    @SuppressWarnings("unchecked")
+    @Test
+    public void findByFilterNoFilter() {
+        //populate few authors
+        final List<Author> authors = Arrays.asList(authorWithId(erichGamma(), 2L), authorWithId(jamesGosling(), 3L),
+                authorWithId(martinFowler(), 4L), authorWithId(robertMartin(), 1L));
+
+        final MultivaluedMap<String, String> multiMap = mock(MultivaluedMap.class);
+        when(uriInfo.getQueryParameters()).thenReturn(multiMap);
+
+        when(authorServices.findByFilter((AuthorFilter) anyObject())).thenReturn(
+                new PaginatedData<Author>(authors.size(), authors));
+
+        final Response response = authorResource.findByFilter();
+        assertThat(response.getStatus(), is(equalTo(HttpCode.OK.getCode())));
+        assertJsonResponseWithFile(response, "authorsAllInOnePage.json");
+    }
+
 
     private void assertJsonResponseWithFile(final Response response, final String fileName) {
         assertJsonMatchesFileContent(response.getEntity().toString(), getPathFileResponse(PATH_RESOURCE, fileName));

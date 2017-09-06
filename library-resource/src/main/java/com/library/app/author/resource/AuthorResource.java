@@ -1,13 +1,17 @@
 package com.library.app.author.resource;
 
+import com.google.gson.JsonElement;
 import com.library.app.author.exception.AuthorNotFoundException;
 import com.library.app.author.model.Author;
+import com.library.app.author.model.filter.AuthorFilter;
 import com.library.app.author.services.AuthorServices;
 import com.library.app.common.exception.FieldNotValidException;
 import com.library.app.common.json.JsonUtils;
+import com.library.app.common.json.JsonWriter;
 import com.library.app.common.json.OperationResultJsonWriter;
 import com.library.app.common.model.HttpCode;
 import com.library.app.common.model.OperationResult;
+import com.library.app.common.model.PaginatedData;
 import com.library.app.common.model.ResourceMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,9 +24,11 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
+import javax.ws.rs.core.UriInfo;
 
 import static com.library.app.common.model.StandardsOperationResults.getOperationResultInvalidField;
 import static com.library.app.common.model.StandardsOperationResults.getOperationResultNotFound;
@@ -39,17 +45,14 @@ public class AuthorResource {
 
     private static final ResourceMessage RESOURCE_MESSAGE = new ResourceMessage("author");
 
-    /**
-     * The Author services.
-     */
     @Inject
     AuthorServices authorServices;
 
-    /**
-     * The Author json converter.
-     */
     @Inject
     AuthorJsonConverter authorJsonConverter;
+
+    @Context
+    UriInfo uriInfo;
 
     /**
      * Add author end point response.
@@ -136,4 +139,25 @@ public class AuthorResource {
         return responseBuilder.build();
     }
 
+
+    /**
+     * Find authors by filter response.
+     *
+     * @return the response
+     */
+    @GET
+    public Response findByFilter() {
+        final AuthorFilter authorFilter = new AuthorFilterExtractorFromUrl(uriInfo).getFilter();
+        logger.debug("Finding authors using filter: {}", authorFilter);
+
+        final PaginatedData<Author> authors = authorServices.findByFilter(authorFilter);
+        logger.debug("Found {} authors", authors.getNumberOfRows());
+
+        //convert response to Json
+        final JsonElement jsonWithPagingAndEntries = JsonUtils.getJsonElementWithPagingAndEntries(authors,
+                authorJsonConverter);
+
+        return Response.status(HttpCode.OK.getCode()).entity(JsonWriter.writeToString(jsonWithPagingAndEntries))
+                .build();
+    }
 }
