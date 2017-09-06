@@ -5,6 +5,7 @@ import com.google.gson.JsonObject;
 import com.library.app.category.model.Category;
 import com.library.app.common.json.JsonReader;
 import com.library.app.common.model.HttpCode;
+import com.library.app.commontests.utils.ArquillianTestUtils;
 import com.library.app.commontests.utils.IntTestUtils;
 import com.library.app.commontests.utils.ResourceClient;
 import com.library.app.commontests.utils.ResourceDefinitions;
@@ -12,22 +13,21 @@ import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.test.api.ArquillianResource;
-import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.jboss.shrinkwrap.resolver.api.maven.Maven;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import javax.ws.rs.core.Response;
-import java.io.File;
 import java.net.URL;
 
-import static com.library.app.commontests.category.CategoryForTestsRepository.*;
-import static com.library.app.commontests.utils.JsonTestUtils.assertJsonMatchesFileContent;
+import static com.library.app.commontests.category.CategoryForTestsRepository.architecture;
+import static com.library.app.commontests.category.CategoryForTestsRepository.cleanCode;
+import static com.library.app.commontests.category.CategoryForTestsRepository.java;
+import static com.library.app.commontests.category.CategoryForTestsRepository.networks;
 import static com.library.app.commontests.utils.FileTestNameUtils.getPathFileRequest;
 import static com.library.app.commontests.utils.FileTestNameUtils.getPathFileResponse;
+import static com.library.app.commontests.utils.JsonTestUtils.assertJsonMatchesFileContent;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
@@ -65,15 +65,7 @@ public class CategoryResourceIntTest {
      */
     @Deployment
     public static WebArchive createDeployment() {
-        return ShrinkWrap
-                .create(WebArchive.class)
-                .addPackages(true, "com.library.app")
-                .addAsResource("persistence-integration.xml", "META-INF/persistence.xml")
-                .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml")
-                .setWebXML(new File("src/test/resources/web.xml"))
-                .addAsLibraries(
-                        Maven.resolver().resolve("com.google.code.gson:gson:2.3.1", "org.mockito:mockito-core:1.9.5")
-                                .withTransitivity().asFile());
+        return ArquillianTestUtils.createDeploymentArchive();
     }
 
     /**
@@ -232,16 +224,9 @@ public class CategoryResourceIntTest {
      */
     private void assertResponseContainsTheCategories(final Response response, final int expectedTotalRecords,
                                                      final Category... expectedCategories) {
-        //convert the response into a Json object
-        final JsonObject result = JsonReader.readAsJsonObject(response.readEntity(String.class));
 
-        //get the number of records from the response and assert it against the pagination number of records
-        final int totalRecords = result.getAsJsonObject("paging").get("totalRecords").getAsInt();
-        assertThat(totalRecords, is(equalTo(expectedTotalRecords)));
-
-        //get the expected number of categories and compare against the response
-        final JsonArray categoriesList = result.getAsJsonArray("entries");
-        assertThat(categoriesList.size(), is(equalTo(expectedCategories.length)));
+        final JsonArray categoriesList = IntTestUtils.assertJsonHasTheNumberOfElementsAndReturnTheEntries(response,
+                expectedTotalRecords, expectedCategories.length);
 
         //compare the name of each category to see if they match the expected names
         for (int i = 0; i < expectedCategories.length; i++) {
@@ -267,7 +252,7 @@ public class CategoryResourceIntTest {
      * @param response The response.
      * @param fileName the name of the file to compare against.
      */
-    private void assertJsonResponseWithFile(Response response, String fileName) {
+    private void assertJsonResponseWithFile(final Response response, final String fileName) {
         assertJsonMatchesFileContent(response.readEntity(String.class), getPathFileResponse(PATH_RESOURCE, fileName));
     }
 
