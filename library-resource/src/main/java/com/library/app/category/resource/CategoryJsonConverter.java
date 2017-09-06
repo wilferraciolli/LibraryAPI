@@ -1,14 +1,12 @@
 package com.library.app.category.resource;
 
-import java.util.List;
-
-import javax.enterprise.context.ApplicationScoped;
-
-import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.library.app.category.model.Category;
+import com.library.app.common.json.EntityJsonConverter;
 import com.library.app.common.json.JsonReader;
+
+import javax.enterprise.context.ApplicationScoped;
 
 /**
  * Class to Convert Json to Java object. Using GSON Google Library. This class is to be called once and dies therefore
@@ -18,14 +16,9 @@ import com.library.app.common.json.JsonReader;
  * @author wilferaciolli
  */
 @ApplicationScoped
-public class CategoryJsonConverter {
+public class CategoryJsonConverter implements EntityJsonConverter<Category> {
 
-    /**
-     * Method to get a Json String, convert it onto a JsonObject then convert it onto a Java Object. It is
-     *
-     * @param json The Json String.
-     * @return The category from the Json string.
-     */
+    @Override
     public Category convertFrom(final String json) {
         // get the json string and convert into JSON object
         final JsonObject jsonObject = JsonReader.readAsJsonObject(json);
@@ -37,34 +30,12 @@ public class CategoryJsonConverter {
         return category;
     }
 
-    /**
-     * Method to get a java object and convert into Json object.
-     *
-     * @param category The java catgory object
-     * @return The Json object (serialized)
-     */
+    @Override
     public JsonElement convertToJsonElement(final Category category) {
-        JsonObject jsonObject = new JsonObject();
+        final JsonObject jsonObject = new JsonObject();
         jsonObject.addProperty("id", category.getId());
         jsonObject.addProperty("name", category.getName());
 
         return jsonObject;
-    }
-
-    /**
-     * Method to take a list of java categories object and serialise into Json.
-     *
-     * @param categories List of categories
-     * @return list of categories in Json
-     */
-    public JsonElement convertToJsonElement(final List<Category> categories) {
-        JsonArray jsonArray = new JsonArray();
-
-        // convert each category into a json and add to its array
-        for (Category category : categories) {
-            jsonArray.add(convertToJsonElement(category));
-        }
-
-        return jsonArray;
     }
 }
