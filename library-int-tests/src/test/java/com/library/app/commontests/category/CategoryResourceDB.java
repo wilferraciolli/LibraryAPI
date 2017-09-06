@@ -11,7 +11,7 @@ import javax.ws.rs.core.MediaType;
 import static com.library.app.commontests.category.CategoryForTestsRepository.allCategories;
 
 /**
- * helper class to add every category to the database.
+ * Helper class to add every category to the database.
  * It runs as a client.
  * Created by wilferaciolli on 13/01/2017.
  */

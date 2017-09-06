@@ -1,5 +1,6 @@
 package com.library.app.commontests.utils;
 
+import com.library.app.author.model.Author;
 import com.library.app.category.model.Category;
 import org.junit.Ignore;
 
@@ -11,7 +12,7 @@ import java.util.List;
 
 /**
  * Helper class to clean all the database when running integration tests.
- * It takes a list of entites and delete them all from the database.
+ * It takes a list of entities and delete them all from the database.
  * Created by wilferaciolli on 13/01/2017.
  */
 @Ignore
@@ -22,7 +23,7 @@ public class TestRepositoryEJB {
     private EntityManager em;
 
     //the list of entities to be removed from the database
-    private static final List<Class<?>> ENTITIES_TO_REMOVE = Arrays.asList(Category.class);
+    private static final List<Class<?>> ENTITIES_TO_REMOVE = Arrays.asList(Category.class, Author.class);
 
     /**
      * Delete all entities from the database.
@@ -34,7 +35,7 @@ public class TestRepositoryEJB {
     }
 
     /**
-     *
+     * Get every entity and delete one by one from the database.
      * @param entityClass The entity class to be removed.
      */
     @SuppressWarnings("unchecked")

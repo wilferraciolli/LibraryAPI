@@ -12,9 +12,8 @@
 
     <artifactId>library-int-tests</artifactId>
 
-    <!-- This project is to hold all of the integration tests. To activate Maven
-            profile defined in here, right click on the project, select Maven, and type
-            in the profile name -->
+    <!-- This module is to hold all of the integration tests. To activate Maven profile defined in here, right click on the project, select Maven, and type
+            in the profile name 'integrationTests-wildfly'-->
 
 
     <!-- Version of Arquillian to be used as Application service -->
