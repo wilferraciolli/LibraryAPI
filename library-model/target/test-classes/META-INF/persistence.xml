@@ -10,6 +10,9 @@
         <!-- Classes to be persisted -->
         <class>com.library.app.category.model.Category</class>
         <class>com.library.app.author.model.Author</class>
+        <class>com.library.app.user.model.User</class>
+        <class>com.library.app.user.model.Customer</class>
+        <class>com.library.app.user.model.Employee</class>
 
         <!-- Properties that tells hibernate to automatically create this database and tables for testing -->
         <properties>
