@@ -1,14 +1,20 @@
 package com.library.app.user.repository;
 
+import com.library.app.common.model.PaginatedData;
+import com.library.app.common.model.filter.PaginationData;
+import com.library.app.common.model.filter.PaginationData.OrderMode;
 import com.library.app.commontests.utils.TestBaseRepository;
 import com.library.app.user.model.User;
 import com.library.app.user.model.User.UserType;
+import com.library.app.user.model.filter.UserFilter;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
 import static com.library.app.commontests.user.UserForTestsRepository.admin;
+import static com.library.app.commontests.user.UserForTestsRepository.allUsers;
 import static com.library.app.commontests.user.UserForTestsRepository.johnDoe;
+import static com.library.app.commontests.user.UserForTestsRepository.mary;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
@@ -120,21 +126,99 @@ public class UserRepositoryUTest extends TestBaseRepository {
         assertThat(userRepository.alreadyExists(customer), is(equalTo(false)));
     }
 
-    // @Test
-    // public void findUserByEmail() {
-    // dbCommandExecutor.executeCommand(() -> {
-    // return userRepository.add(johnDoe());
-    // });
-    //
-    // final User user = userRepository.findByEmail(johnDoe().getEmail());
-    // assertUser(user, johnDoe(), UserType.CUSTOMER);
-    // }
-    //
-    // @Test
-    // public void findUserByEmailNotFound() {
-    // final User user = userRepository.findByEmail(johnDoe().getEmail());
-    // assertThat(user, is(nullValue()));
-    // }
+    /**
+     * Find user by email.
+     */
+    @Test
+    public void findUserByEmail() {
+        dbCommandExecutor.executeCommand(() -> {
+            return userRepository.add(johnDoe());
+        });
+
+        final User user = userRepository.findByEmail(johnDoe().getEmail());
+        assertUser(user, johnDoe(), UserType.CUSTOMER);
+    }
+
+    /**
+     * Find user by email not found.
+     */
+    @Test
+    public void findUserByEmailNotFound() {
+        final User user = userRepository.findByEmail(johnDoe().getEmail());
+        assertThat(user, is(nullValue()));
+    }
+
+    /**
+     * Find by filter with paging ordering by name descending.
+     */
+    @Test
+    public void findByFilterWithPagingOrderingByNameDescending() {
+        loadDataForFindByFilter();
+
+        UserFilter userFilter = new UserFilter();
+        userFilter.setPaginationData(new PaginationData(0, 2, "name", OrderMode.DESCENDING));
+
+        PaginatedData<User> result = userRepository.findByFilter(userFilter);
+        assertThat(result.getNumberOfRows(), is(equalTo(3)));
+        assertThat(result.getRows().size(), is(equalTo(2)));
+        assertThat(result.getRow(0).getName(), is(equalTo(mary().getName())));
+        assertThat(result.getRow(1).getName(), is(equalTo(johnDoe().getName())));
+
+        userFilter = new UserFilter();
+        userFilter.setPaginationData(new PaginationData(2, 2, "name", OrderMode.DESCENDING));
+
+        result = userRepository.findByFilter(userFilter);
+        assertThat(result.getNumberOfRows(), is(equalTo(3)));
+        assertThat(result.getRows().size(), is(equalTo(1)));
+        assertThat(result.getRow(0).getName(), is(equalTo(admin().getName())));
+    }
+
+    /**
+     * Find by filter filtering by name.
+     */
+    @Test
+    public void findByFilterFilteringByName() {
+        loadDataForFindByFilter();
+
+        final UserFilter userFilter = new UserFilter();
+        userFilter.setName("m");
+        userFilter.setPaginationData(new PaginationData(0, 2, "name", OrderMode.ASCENDING));
+
+        final PaginatedData<User> result = userRepository.findByFilter(userFilter);
+        assertThat(result.getNumberOfRows(), is(equalTo(2)));
+        assertThat(result.getRows().size(), is(equalTo(2)));
+        assertThat(result.getRow(0).getName(), is(equalTo(admin().getName())));
+        assertThat(result.getRow(1).getName(), is(equalTo(mary().getName())));
+    }
+
+    /**
+     * Find by filter filtering by name and type.
+     */
+    @Test
+    public void findByFilterFilteringByNameAndType() {
+        loadDataForFindByFilter();
+
+        final UserFilter userFilter = new UserFilter();
+        userFilter.setName("m");
+        userFilter.setUserType(UserType.EMPLOYEE);
+        userFilter.setPaginationData(new PaginationData(0, 2, "name", OrderMode.ASCENDING));
+
+        final PaginatedData<User> result = userRepository.findByFilter(userFilter);
+        assertThat(result.getNumberOfRows(), is(equalTo(1)));
+        assertThat(result.getRows().size(), is(equalTo(1)));
+        assertThat(result.getRow(0).getName(), is(equalTo(admin().getName())));
+    }
+
+    /**
+     * Helper method to load users to test.
+     */
+    private void loadDataForFindByFilter() {
+        dbCommandExecutor.executeCommand(() -> {
+            allUsers().forEach(userRepository::add);
+            return null;
+        });
+    }
+
 
     /**
      * Assert user. This is a helper method to assert users.

@@ -10,7 +10,6 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -52,35 +51,7 @@ public class AuthorRepository extends GenericRepository<Author> {
             clause.append(" AND UPPER(e.name) Like UPPER(:name)");
             queryParameters.put("name", "%" + filter.getName() + "%");
         }
-
-        //Add the sort by field
-        final StringBuilder clauseSort = new StringBuilder();
-        if (filter.hasOrderField()) {
-            clauseSort.append("Order by e." + filter.getPaginationData().getOrderField());
-            clauseSort.append(filter.getPaginationData().isAscending() ? " ASC" : " DESC");
-        } else {
-            clauseSort.append("Order by e.name ASC");
-        }
-
-        //Prepare the query to get the authors by filter
-        final Query queryAuthors = em.createQuery("Select e from Author e " + clause.toString() + " " + clauseSort.toString());
-        applyQueryParametersOnQuery(queryParameters, queryAuthors);
-        if (filter.hasPaginationData()) {
-            queryAuthors.setFirstResult(filter.getPaginationData().getFirstResult());
-            queryAuthors.setMaxResults(filter.getPaginationData().getMaxResults());
-        }
-
-        //get the list of authors
-        final List<Author> authors = queryAuthors.getResultList();
-
-        //get the count to provide the pagination the number of rows
-        final Query queryCount = em.createQuery("Select count(e) From Author e " + clause.toString());
-
-        applyQueryParametersOnQuery(queryParameters, queryCount);
-        final Integer count = ((Long) queryCount.getSingleResult()).intValue();
-
-        //return the result
-        return new PaginatedData<Author>(count, authors);
+        return findByParameters(clause.toString(), filter.getPaginationData(), queryParameters, "name ASC");
     }
 
     /**
