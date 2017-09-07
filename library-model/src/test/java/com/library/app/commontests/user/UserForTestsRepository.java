@@ -1,6 +1,8 @@
 package com.library.app.commontests.user;
 
 
+import com.library.app.common.utils.DateUtils;
+import com.library.app.common.utils.PasswordUtils;
 import com.library.app.user.model.Customer;
 import com.library.app.user.model.Employee;
 import com.library.app.user.model.User;
@@ -66,6 +68,31 @@ public class UserForTestsRepository {
      */
     public static List<User> allUsers() {
         return Arrays.asList(admin(), johnDoe(), mary());
+    }
+
+    /**
+     * User with id and created at user. Helper method to dynamically create a user and assing an id to it.
+     *
+     * @param user the user
+     * @param id   the id
+     * @return the user
+     */
+    public static User userWithIdAndCreatedAt(final User user, final Long id) {
+        user.setId(id);
+        user.setCreatedAt(DateUtils.getAsDateTime("2015-01-03T22:35:42Z"));
+
+        return user;
+    }
+
+    /**
+     * User with encrypted password user.
+     *
+     * @param user the user
+     * @return the user
+     */
+    public static User userWithEncryptedPassword(final User user) {
+        user.setPassword(PasswordUtils.encryptPassword(user.getPassword()));
+        return user;
     }
 
 }
