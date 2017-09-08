@@ -78,7 +78,13 @@ public class ResourceClient {
      * @return The Client.
      */
     private Builder buildClient() {
-        final Client resourceClient = ClientBuilder.newClient();
+        Client resourceClient = ClientBuilder.newClient();
+
+        //add user details to the client
+        if (user != null) {
+            resourceClient = resourceClient.register(new HttpBasicAuthenticator(user.getEmail(), user.getPassword()));
+        }
+
         return resourceClient.target(getFullURL(resourcePath)).request();
     }
 

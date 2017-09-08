@@ -91,6 +91,7 @@ public class UserResourceIntTest {
      */
     private void findUserAndAssertResponseWithUser(final Long userIdToBeFound, final User expectedUser) {
         resourceClient.user(admin());
+
         final String bodyResponse = IntTestUtils.findById(resourceClient, PATH_RESOURCE, userIdToBeFound);
         assertResponseWithUser(bodyResponse, expectedUser);
     }
