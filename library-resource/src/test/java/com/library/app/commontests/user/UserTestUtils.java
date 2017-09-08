@@ -9,7 +9,7 @@ public final class UserTestUtils {
     }
 
     /**
-     * Gets json with password.
+     * Gets user with password JSON.
      *
      * @param password the password
      * @return the json with password
@@ -17,5 +17,17 @@ public final class UserTestUtils {
     public static String getJsonWithPassword(final String password) {
         return String.format("{\"password\":\"%s\"}", password);
     }
+
+    /**
+     * Gets user with email and password JSON.
+     *
+     * @param email    the email
+     * @param password the password
+     * @return the json with email and password
+     */
+    public static String getJsonWithEmailAndPassword(final String email, final String password) {
+        return String.format("{\"email\":\"%s\",\"password\":\"%s\"}", email, password);
+    }
+
 
 }

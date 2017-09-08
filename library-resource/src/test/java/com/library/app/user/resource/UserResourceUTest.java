@@ -2,28 +2,35 @@ package com.library.app.user.resource;
 
 import com.library.app.common.exception.FieldNotValidException;
 import com.library.app.common.model.HttpCode;
+import com.library.app.common.model.PaginatedData;
 import com.library.app.commontests.utils.ResourceDefinitions;
 import com.library.app.user.exception.UserExistentException;
 import com.library.app.user.exception.UserNotFoundException;
 import com.library.app.user.model.User;
 import com.library.app.user.model.User.Roles;
+import com.library.app.user.model.filter.UserFilter;
 import com.library.app.user.services.UserServices;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
 import javax.ws.rs.core.UriInfo;
 import java.security.Principal;
+import java.util.ArrayList;
+import java.util.List;
 
 import static com.library.app.commontests.user.UserArgumentMatcher.userEq;
 import static com.library.app.commontests.user.UserForTestsRepository.admin;
+import static com.library.app.commontests.user.UserForTestsRepository.allUsers;
 import static com.library.app.commontests.user.UserForTestsRepository.johnDoe;
 import static com.library.app.commontests.user.UserForTestsRepository.mary;
 import static com.library.app.commontests.user.UserForTestsRepository.userWithIdAndCreatedAt;
-import static com.library.app.commontests.user.UserTestUtils.*;
+import static com.library.app.commontests.user.UserTestUtils.getJsonWithEmailAndPassword;
+import static com.library.app.commontests.user.UserTestUtils.getJsonWithPassword;
 import static com.library.app.commontests.utils.FileTestNameUtils.getPathFileRequest;
 import static com.library.app.commontests.utils.FileTestNameUtils.getPathFileResponse;
 import static com.library.app.commontests.utils.JsonTestUtils.assertJsonMatchesExpectedJson;
@@ -269,6 +276,83 @@ public class UserResourceUTest {
         final Response response = userResource.updatePassword(1L, getJsonWithPassword("123456"));
         assertThat(response.getStatus(), is(equalTo(HttpCode.FORBIDDEN.getCode())));
     }
+
+    /**
+     * Find customer by id.
+     */
+    @Test
+    public void findCustomerById() {
+        when(userServices.findById(1L)).thenReturn(userWithIdAndCreatedAt(johnDoe(), 1L));
+
+        final Response response = userResource.findById(1L);
+        assertThat(response.getStatus(), is(equalTo(HttpCode.OK.getCode())));
+        assertJsonResponseWithFile(response, "customerJohnDoeFound.json");
+    }
+
+    /**
+     * Find user by id not found.
+     */
+    @Test
+    public void findUserByIdNotFound() {
+        when(userServices.findById(1L)).thenThrow(new UserNotFoundException());
+
+        final Response response = userResource.findById(1L);
+        assertThat(response.getStatus(), is(equalTo(HttpCode.NOT_FOUND.getCode())));
+    }
+
+    /**
+     * Find employee by email and password.
+     */
+    @Test
+    public void findEmployeeByEmailAndPassword() {
+        when(userServices.findByEmailAndPassword(admin().getEmail(), admin().getPassword())).thenReturn(
+                userWithIdAndCreatedAt(admin(), 1L));
+
+        final Response response = userResource.findByEmailAndPassword(getJsonWithEmailAndPassword(admin().getEmail(),
+                admin()
+                        .getPassword()));
+        assertThat(response.getStatus(), is(equalTo(HttpCode.OK.getCode())));
+        assertJsonResponseWithFile(response, "employeeAdminFound.json");
+    }
+
+    /**
+     * Find user by email and password not found.
+     */
+    @Test
+    public void findUserByEmailAndPasswordNotFound() {
+        when(userServices.findByEmailAndPassword(admin().getEmail(), admin().getPassword())).thenThrow(
+                new UserNotFoundException());
+
+        final Response response = userResource.findByEmailAndPassword(getJsonWithEmailAndPassword(admin().getEmail(),
+                admin()
+                        .getPassword()));
+        assertThat(response.getStatus(), is(equalTo(HttpCode.NOT_FOUND.getCode())));
+    }
+
+    /**
+     * Find by filter no filter.
+     */
+    @SuppressWarnings("unchecked")
+    @Test
+    public void findByFilterNoFilter() {
+        final List<User> users = new ArrayList<>();
+        final List<User> allUsers = allUsers();
+        for (int i = 1; i <= allUsers.size(); i++) {
+            //set ids to users
+            users.add(userWithIdAndCreatedAt(allUsers.get(i - 1), new Long(i)));
+        }
+
+        final MultivaluedMap<String, String> multiMap = mock(MultivaluedMap.class);
+        when(uriInfo.getQueryParameters()).thenReturn(multiMap);
+
+        when(userServices.findByFilter((UserFilter) anyObject())).thenReturn(
+                new PaginatedData<User>(users.size(), users));
+
+        final Response response = userResource.findByFilter();
+        assertThat(response.getStatus(), is(equalTo(HttpCode.OK.getCode())));
+        assertJsonResponseWithFile(response, "usersAllInOnePage.json");
+    }
+
 
     /**
      * Sets up principal user.

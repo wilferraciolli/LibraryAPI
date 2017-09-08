@@ -9,18 +9,17 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.UriInfo;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.Map.Entry;
 
+import static com.library.app.commontests.utils.FilterExtractorTestUtils.assertActualPaginationDataWithExpected;
+import static com.library.app.commontests.utils.FilterExtractorTestUtils.setUpUriInfoWithMap;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertThat;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+
 
 
 /**
@@ -109,35 +108,14 @@ public class AuthorFilterExtractorFromUrlUTest {
      * @param sort    the sort
      */
     @SuppressWarnings("unchecked")
-    private void setUpUriInfo(final String page, final String perPage, final String name, final String sort) {
+    public void setUpUriInfo(final String page, final String perPage, final String name, final String sort) {
         final Map<String, String> parameters = new LinkedHashMap<>();
         parameters.put("page", page);
         parameters.put("per_page", perPage);
         parameters.put("name", name);
         parameters.put("sort", sort);
 
-        final MultivaluedMap<String, String> multiMap = mock(MultivaluedMap.class);
-
-        //mock return calls to every value on the map
-        for (final Entry<String, String> keyValue : parameters.entrySet()) {
-            when(multiMap.getFirst(keyValue.getKey())).thenReturn(keyValue.getValue());
-        }
-
-        when(uriInfo.getQueryParameters()).thenReturn(multiMap);
-    }
-
-    /**
-     * Assert actual pagination data with expected. Helper method for assertions. This will compare the pagination data.
-     *
-     * @param actual   the actual
-     * @param expected the expected
-     */
-    private static void assertActualPaginationDataWithExpected(final PaginationData actual,
-                                                               final PaginationData expected) {
-        assertThat(actual.getFirstResult(), is(equalTo(expected.getFirstResult())));
-        assertThat(actual.getMaxResults(), is(equalTo(expected.getMaxResults())));
-        assertThat(actual.getOrderField(), is(equalTo(expected.getOrderField())));
-        assertThat(actual.getOrderMode(), is(equalTo(expected.getOrderMode())));
+        setUpUriInfoWithMap(uriInfo, parameters);
     }
 
 }
