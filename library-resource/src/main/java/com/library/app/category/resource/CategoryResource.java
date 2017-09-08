@@ -16,6 +16,8 @@ import com.library.app.common.model.ResourceMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.annotation.security.PermitAll;
+import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -41,6 +43,7 @@ import static com.library.app.common.model.StandardsOperationResults.getOperatio
 @Path("/categories")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
+@RolesAllowed({"EMPLOYEE"})
 public class CategoryResource {
 
     // Add a logger
@@ -178,6 +181,7 @@ public class CategoryResource {
      * @return All categories or empty list.
      */
     @GET
+    @PermitAll
     public Response findAll() {
         logger.debug("Find all categories");
 

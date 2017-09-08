@@ -33,6 +33,8 @@ import static com.library.app.commontests.author.AuthorForTestsRepository.ralphJ
 import static com.library.app.commontests.author.AuthorForTestsRepository.richardHelm;
 import static com.library.app.commontests.author.AuthorForTestsRepository.robertMartin;
 import static com.library.app.commontests.author.AuthorForTestsRepository.williamOpdyke;
+import static com.library.app.commontests.user.UserForTestsRepository.admin;
+import static com.library.app.commontests.user.UserForTestsRepository.johnDoe;
 import static com.library.app.commontests.utils.FileTestNameUtils.getPathFileRequest;
 import static com.library.app.commontests.utils.FileTestNameUtils.getPathFileResponse;
 import static com.library.app.commontests.utils.JsonTestUtils.assertJsonMatchesFileContent;
@@ -73,6 +75,9 @@ public class AuthorResourceIntTest {
         this.resourceClient = new ResourceClient(url);
 
         resourceClient.resourcePath("/DB").delete();
+        //add users to be able to make calls
+        resourceClient.resourcePath("DB/" + ResourceDefinitions.USER.getResourceName()).postWithContent("");
+        resourceClient.user(admin());
     }
 
     /**
@@ -159,6 +164,36 @@ public class AuthorResourceIntTest {
     }
 
     /**
+     * Find by filter with no user.
+     */
+    @Test
+    @RunAsClient
+    public void findByFilterWithNoUser() {
+        final Response response = resourceClient.user(null).resourcePath(PATH_RESOURCE).get();
+        assertThat(response.getStatus(), is(equalTo(HttpCode.UNAUTHORIZED.getCode())));
+    }
+
+    /**
+     * Find by filter with user customer.
+     */
+    @Test
+    @RunAsClient
+    public void findByFilterWithUserCustomer() {
+        final Response response = resourceClient.user(johnDoe()).resourcePath(PATH_RESOURCE).get();
+        assertThat(response.getStatus(), is(equalTo(HttpCode.OK.getCode())));
+    }
+
+    /**
+     * Find by id id with user customer.
+     */
+    @Test
+    @RunAsClient
+    public void findByIdIdWithUserCustomer() {
+        final Response response = resourceClient.user(johnDoe()).resourcePath(PATH_RESOURCE + "/999").get();
+        assertThat(response.getStatus(), is(equalTo(HttpCode.FORBIDDEN.getCode())));
+    }
+
+    /**
      * Add author and get id long.
      *
      * @param fileName the file name
@@ -198,8 +233,8 @@ public class AuthorResourceIntTest {
      * @param expectedTotalRecords the expected total records
      * @param expectedAuthors      the expected authors
      */
-    public void assertResponseContainsTheAuthors(final Response response, final int expectedTotalRecords,
-                                                 final Author... expectedAuthors) {
+    private void assertResponseContainsTheAuthors(final Response response, final int expectedTotalRecords,
+                                                  final Author... expectedAuthors) {
         //assert response
         final JsonArray authorsList = IntTestUtils.assertJsonHasTheNumberOfElementsAndReturnTheEntries(response,
                 expectedTotalRecords, expectedAuthors.length);

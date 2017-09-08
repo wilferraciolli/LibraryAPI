@@ -1,5 +1,6 @@
 package com.library.app.user.model;
 
+
 import org.hibernate.validator.constraints.Email;
 
 import javax.persistence.CollectionTable;

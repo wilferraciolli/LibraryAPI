@@ -29,11 +29,15 @@ public enum HttpCode {
     /**
      * Forbidden http code.
      */
-    FORBIDDEN(303),
+    FORBIDDEN(403),
     /**
      * Internal error http code.
      */
-    INTERNAL_ERROR(500);
+    INTERNAL_ERROR(500),
+    /**
+     * Unauthorized http code.
+     */
+    UNAUTHORIZED(401);
 
     private final int code;
 

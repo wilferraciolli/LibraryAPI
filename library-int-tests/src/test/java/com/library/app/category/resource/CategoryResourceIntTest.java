@@ -25,6 +25,8 @@ import static com.library.app.commontests.category.CategoryForTestsRepository.ar
 import static com.library.app.commontests.category.CategoryForTestsRepository.cleanCode;
 import static com.library.app.commontests.category.CategoryForTestsRepository.java;
 import static com.library.app.commontests.category.CategoryForTestsRepository.networks;
+import static com.library.app.commontests.user.UserForTestsRepository.admin;
+import static com.library.app.commontests.user.UserForTestsRepository.johnDoe;
 import static com.library.app.commontests.utils.FileTestNameUtils.getPathFileRequest;
 import static com.library.app.commontests.utils.FileTestNameUtils.getPathFileResponse;
 import static com.library.app.commontests.utils.JsonTestUtils.assertJsonMatchesFileContent;
@@ -62,6 +64,8 @@ public class CategoryResourceIntTest {
      * Define which archive Arquillian will generate and set its properties.This defines that all the classes under
      * com.library.app will be deployed. Then it adds the persistence.xml to configure WildFLy. Also the beans xml file
      * needs to be added for CDI to work plus adding Json and MOCKITO dependencies.
+     *
+     * @return the web archive
      */
     @Deployment
     public static WebArchive createDeployment() {
@@ -79,6 +83,9 @@ public class CategoryResourceIntTest {
 
         //clean the database
         resourceClient.resourcePath("/DB").delete();
+        //add users to be able to make calls
+        resourceClient.resourcePath("DB/" + ResourceDefinitions.USER.getResourceName()).postWithContent("");
+        resourceClient.user(admin());
     }
 
     /**
@@ -213,6 +220,37 @@ public class CategoryResourceIntTest {
 
         //assert that the response contains the expected categories
         assertResponseContainsTheCategories(response, 4, architecture(), cleanCode(), java(), networks());
+    }
+
+
+    /**
+     * Find all categories with no user.
+     */
+    @Test
+    @RunAsClient
+    public void findAllCategoriesWithNoUser() {
+        final Response response = resourceClient.user(null).resourcePath(PATH_RESOURCE).get();
+        assertThat(response.getStatus(), is(equalTo(HttpCode.UNAUTHORIZED.getCode())));
+    }
+
+    /**
+     * Find all categories with user customer.
+     */
+    @Test
+    @RunAsClient
+    public void findAllCategoriesWithUserCustomer() {
+        final Response response = resourceClient.user(johnDoe()).resourcePath(PATH_RESOURCE).get();
+        assertThat(response.getStatus(), is(equalTo(HttpCode.OK.getCode())));
+    }
+
+    /**
+     * Find category by id with user customer.
+     */
+    @Test
+    @RunAsClient
+    public void findCategoryByIdWithUserCustomer() {
+        final Response response = resourceClient.user(johnDoe()).resourcePath(PATH_RESOURCE + "/999").get();
+        assertThat(response.getStatus(), is(equalTo(HttpCode.FORBIDDEN.getCode())));
     }
 
     /**
