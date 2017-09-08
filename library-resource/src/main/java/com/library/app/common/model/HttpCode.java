@@ -25,14 +25,23 @@ public enum HttpCode {
     /**
      * Resource success, Normally a GET.
      */
-    OK(200);
+    OK(200),
+    /**
+     * Forbidden http code.
+     */
+    FORBIDDEN(303);
 
-    private int code;
+    private final int code;
 
     private HttpCode(final int code) {
         this.code = code;
     }
 
+    /**
+     * Gets code.
+     *
+     * @return the code
+     */
     public int getCode() {
         return code;
     }

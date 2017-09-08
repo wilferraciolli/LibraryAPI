@@ -1,14 +1,14 @@
 package com.library.app.common.model;
 
 /**
- * Class to represent Service response codes.
+ * Class to represent Service response, it contains the entity, statuses and error codes.
  *
  * @author wilferaciolli
  */
 public class OperationResult {
 
     // Response codes available from Service methods
-    private boolean success;
+    private final boolean success;
     private String errorIdentification;
     private String errorDescription;
     private Object entity;

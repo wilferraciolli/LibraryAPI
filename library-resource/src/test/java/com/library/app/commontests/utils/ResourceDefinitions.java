@@ -17,7 +17,11 @@ public enum ResourceDefinitions {
     /**
      * Author resource definitions.
      */
-    AUTHOR("authors");
+    AUTHOR("authors"),
+    /**
+     * User resource definitions.
+     */
+    USER("users");
 
     private final String resourceName;
 
