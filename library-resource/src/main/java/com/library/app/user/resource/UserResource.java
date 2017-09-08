@@ -22,6 +22,8 @@ import com.library.app.user.services.UserServices;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.annotation.security.PermitAll;
+import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -53,27 +55,15 @@ public class UserResource {
 
     private static final ResourceMessage RESOURCE_MESSAGE = new ResourceMessage("user");
 
-    /**
-     * The User services.
-     */
     @Inject
     UserServices userServices;
 
-    /**
-     * The User json converter.
-     */
     @Inject
     UserJsonConverter userJsonConverter;
 
-    /**
-     * The Security context.
-     */
     @Context
     SecurityContext securityContext;
 
-    /**
-     * The Uri info.
-     */
     @Context
     UriInfo uriInfo;
 
@@ -121,6 +111,7 @@ public class UserResource {
      */
     @PUT
     @Path("/{id}")
+    @PermitAll
     public Response update(@PathParam("id") final Long id, final String body) {
         logger.debug("Updating the user {} with body {}", id, body);
 
@@ -166,6 +157,7 @@ public class UserResource {
      */
     @PUT
     @Path("/{id}/password")
+    @PermitAll
     public Response updatePassword(@PathParam("id") final Long id, final String body) {
         logger.debug("Updating the password for user {}", id);
 
@@ -199,6 +191,7 @@ public class UserResource {
      */
     @GET
     @Path("/{id}")
+    @RolesAllowed({"ADMINISTRATOR"})
     public Response findById(@PathParam("id") final Long id) {
         logger.debug("Find user by id: {}", id);
         ResponseBuilder responseBuilder;
@@ -224,6 +217,7 @@ public class UserResource {
      */
     @POST
     @Path("/authenticate")
+    @PermitAll
     public Response findByEmailAndPassword(final String body) {
         logger.debug("Find user by email and password");
         ResponseBuilder responseBuilder;
@@ -250,6 +244,7 @@ public class UserResource {
      * @return the response
      */
     @GET
+    @RolesAllowed({"ADMINISTRATOR"})
     public Response findByFilter() {
         final UserFilter userFilter = new UserFilterExtractorFromUrl(uriInfo).getFilter();
         logger.debug("Finding users using filter: {}", userFilter);

@@ -1,0 +1,4 @@
+<jboss-web>
+    <!-- Define the security domain added to the standalone.xml -->
+    <security-domain>library</security-domain>
+</jboss-web>

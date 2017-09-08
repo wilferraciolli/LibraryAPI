@@ -1,8 +1,7 @@
 package com.library.app.commontests.utils;
 
 
-import java.net.URISyntaxException;
-import java.net.URL;
+import com.library.app.user.model.User;
 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
@@ -10,6 +9,8 @@ import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.Invocation.Builder;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.net.URISyntaxException;
+import java.net.URL;
 
 import static com.library.app.commontests.utils.JsonTestUtils.readJsonFile;
 
@@ -20,8 +21,9 @@ import static com.library.app.commontests.utils.JsonTestUtils.readJsonFile;
  */
 public class ResourceClient {
 
-    private URL urlBase;
+    private final URL urlBase;
     private String resourcePath;
+    private User user;
 
     // This class will receive a base URL to act as a client for test eg http:localhost/test
     public ResourceClient(final URL urlBase) {
@@ -31,6 +33,12 @@ public class ResourceClient {
     // The path to access such as '/categories/{id}'
     public ResourceClient resourcePath(final String resourcePath) {
         this.resourcePath = resourcePath;
+        return this;
+    }
+
+    //The current user making the calls
+    public ResourceClient user(final User user) {
+        this.user = user;
         return this;
     }
 
@@ -45,12 +53,12 @@ public class ResourceClient {
     }
 
     //Update a file by passing its name - update category from a file
-    public Response putWithFile(String fileName) {
+    public Response putWithFile(final String fileName) {
         return putWithContent(getRequestFromFileOrEmptyIfNullFile(fileName));
     }
 
     //Update a file by passing its content - update category from content
-    public Response putWithContent(String content) {
+    public Response putWithContent(final String content) {
         return buildClient().put(Entity.entity(content, MediaType.APPLICATION_JSON));
     }
 
