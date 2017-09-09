@@ -48,4 +48,18 @@ public class StandardsOperationResults {
         return OperationResult.error(resourceMessage.getKeyOfResourceNotFound(),
                 resourceMessage.getMessageOfResourceNotFound());
     }
+
+
+    /**
+     * Gets operation result dependency not found. Cannot find a dependency Eg Author or Category...
+     *
+     * @param resourceMessage the resource message
+     * @param dependencyField the dependency field
+     * @return the operation result dependency not found
+     */
+    public static OperationResult getOperationResultDependencyNotFound(final ResourceMessage resourceMessage,
+                                                                       final String dependencyField) {
+        return OperationResult.error(resourceMessage.getKeyOfInvalidField(dependencyField),
+                resourceMessage.getMessageNotFound());
+    }
 }

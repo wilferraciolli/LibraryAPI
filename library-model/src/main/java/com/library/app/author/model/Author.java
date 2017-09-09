@@ -42,6 +42,15 @@ public class Author implements Serializable {
     }
 
     /**
+     * Instantiates a new Author by passing only the Author id.
+     *
+     * @param id the author id
+     */
+    public Author(final long id) {
+        this.id = id;
+    }
+
+    /**
      * Gets id.
      *
      * @return the id
