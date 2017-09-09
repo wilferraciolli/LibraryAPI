@@ -38,6 +38,21 @@ public class IntTestUtils {
     }
 
     /**
+     * Add element with content and get id.
+     *
+     * @param resourceClient the resource client
+     * @param pathResource   the path resource
+     * @param content        the content
+     * @return the long
+     */
+    public static Long addElementWithContentAndGetId(final ResourceClient resourceClient, final String pathResource,
+                                                     final String content) {
+        final Response response = resourceClient.resourcePath(pathResource).postWithContent(content);
+        return assertResponseIsCreatedAndGetId(response);
+    }
+
+
+    /**
      * Helper method to check that the response was OK and return it as String.
      *
      * @param resourceClient The resource client.
