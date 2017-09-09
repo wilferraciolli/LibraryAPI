@@ -1,0 +1,362 @@
+{
+	"variables": [],
+	"info": {
+		"name": "LibraryAPI",
+		"_postman_id": "7a395d8d-015c-bed4-98e5-8181ccfddfb0",
+		"description": "",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Category",
+			"description": "",
+			"item": [
+				{
+					"name": "Get categories",
+					"request": {
+						"url": "{{host}}categories",
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Basic d2lsaWFtMzM0QGhvdG1haWwuY29tOjEyMzQ1Ng==",
+								"description": ""
+							}
+						],
+						"body": {},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Create category",
+					"request": {
+						"url": "{{host}}categories",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							},
+							{
+								"key": "Authorization",
+								"value": "Basic YWRtQGRvbWFpbi5jb206MTIzNDU2",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"name\" : \"Java 9\"\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Update category",
+					"request": {
+						"url": "{{host}}categories/4",
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							},
+							{
+								"key": "Authorization",
+								"value": "Basic YWRtQGRvbWFpbi5jb206MTIzNDU2",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"name\" : \"Java 9\"\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Author",
+			"description": "",
+			"item": [
+				{
+					"name": "Get authors",
+					"request": {
+						"url": "{{host}}authors",
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Basic d2lsaWFtMzM0QGhvdG1haWwuY29tOjEyMzQ1Ng==",
+								"description": ""
+							}
+						],
+						"body": {},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Get authors with filters",
+					"request": {
+						"url": {
+							"raw": "{{host}}authors?name=Martin&page=0&per_page=3&sort=+name",
+							"host": [
+								"{{host}}authors"
+							],
+							"query": [
+								{
+									"key": "name",
+									"value": "Martin",
+									"equals": true,
+									"description": ""
+								},
+								{
+									"key": "page",
+									"value": "0",
+									"equals": true,
+									"description": ""
+								},
+								{
+									"key": "per_page",
+									"value": "3",
+									"equals": true,
+									"description": ""
+								},
+								{
+									"key": "sort",
+									"value": "+name",
+									"equals": true,
+									"description": ""
+								}
+							],
+							"variable": []
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Basic d2lsaWFtMzM0QGhvdG1haWwuY29tOjEyMzQ1Ng==",
+								"description": ""
+							}
+						],
+						"body": {},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Create author",
+					"request": {
+						"url": "{{host}}authors",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							},
+							{
+								"key": "Authorization",
+								"value": "Basic YWRtQGRvbWFpbi5jb206MTIzNDU2",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"name\" : \"Martin Fowler\"\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Update author",
+					"request": {
+						"url": "{{host}}authors/2",
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							},
+							{
+								"key": "Authorization",
+								"value": "Basic YWRtQGRvbWFpbi5jb206MTIzNDU2",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"name\" : \"Wiliam Ferraciolli\"\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "User",
+			"description": "",
+			"item": [
+				{
+					"name": "Get users",
+					"request": {
+						"url": "{{host}}users",
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Basic YWRtQGRvbWFpbi5jb206MTIzNDU2",
+								"description": ""
+							}
+						],
+						"body": {},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Get users with filters",
+					"request": {
+						"url": {
+							"raw": "{{host}}users?name=Martin&page=0&per_page=3&sort=+name",
+							"host": [
+								"{{host}}users"
+							],
+							"query": [
+								{
+									"key": "name",
+									"value": "Martin",
+									"equals": true,
+									"description": ""
+								},
+								{
+									"key": "page",
+									"value": "0",
+									"equals": true,
+									"description": ""
+								},
+								{
+									"key": "per_page",
+									"value": "3",
+									"equals": true,
+									"description": ""
+								},
+								{
+									"key": "sort",
+									"value": "+name",
+									"equals": true,
+									"description": ""
+								}
+							],
+							"variable": []
+						},
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Create user",
+					"request": {
+						"url": "{{host}}users",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Wiliam Ferraciolli\",\r\n    \"email\": \"wiliam334@hotmail.com\",\r\n    \"password\": \"123456\",\r\n    \"type\": \"CUSTOMER\"\r\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Authenticate user",
+					"request": {
+						"url": "{{host}}users/authenticate",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"adm@domain.com\",\r\n    \"password\": \"123456\"\r\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Update user",
+					"request": {
+						"url": "{{host}}users/1",
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							},
+							{
+								"key": "Authorization",
+								"value": "Basic d2lsaWFtMzM0QGhvdG1haWwuY29tOjEyMzQ1Ng==",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Wiliam Ferraciolli\",\r\n    \"email\": \"wiliam334@hotmail.com\",\r\n    \"password\": \"123456\",\r\n    \"type\": \"CUSTOMER\"\r\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Update user's password",
+					"request": {
+						"url": "{{host}}users/1/password",
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							},
+							{
+								"key": "Authorization",
+								"value": "Basic YWRtQGRvbWFpbi5jb206MTIzNDU2",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"password\": \"123456\"\r\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

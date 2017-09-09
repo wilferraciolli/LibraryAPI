@@ -31,4 +31,9 @@ public final class PasswordUtils {
         return Base64.getMimeEncoder().encodeToString(md.digest());
     }
 
+    //Use this method to pass a pasword and get the encrypted values off it
+//    public static void main(final String[] args){
+//        System.out.println(PasswordUtils.encryptPassword("123456"));
+//    }
+
 }

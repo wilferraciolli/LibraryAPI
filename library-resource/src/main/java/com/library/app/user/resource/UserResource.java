@@ -68,7 +68,7 @@ public class UserResource {
     UriInfo uriInfo;
 
     /**
-     * Add user response.
+     * Add a new user (Register) response.
      *
      * @param body the body
      * @return the response

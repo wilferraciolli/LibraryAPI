@@ -4,10 +4,60 @@
          xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"
          version="3.1">
 
-    <!-- Define the endpoints -->
+    <!-- Define the endpoints Eg http://localhost:8080/applicationName/api/categoryResource-->
     <servlet-mapping>
         <servlet-name>javax.ws.rs.core.Application</servlet-name>
         <url-pattern>/api/*</url-pattern>
     </servlet-mapping>
+
+    <!-- Defining security, using role based security, look for annotations -->
+    <context-param>
+        <param-name>resteasy.role.based.security</param-name>
+        <param-value>true</param-value>
+    </context-param>
+
+    <!--  disable security for users to not be logged on to be able to make requests on 'api/users' url Eg Register...-->
+    <security-constraint>
+        <display-name>API New User</display-name>
+        <web-resource-collection>
+            <web-resource-name>API New User</web-resource-name>
+            <url-pattern>/api/users/*</url-pattern>
+            <http-method>POST</http-method>
+        </web-resource-collection>
+    </security-constraint>
+
+    <!-- Add security to theses end points, by forcing every user to be logged on to make the calls.
+ And allow every role on every CRUD method-->
+    <security-constraint>
+        <display-name>API Area</display-name>
+        <web-resource-collection>
+            <web-resource-name>API Area</web-resource-name>
+            <url-pattern>/api/*</url-pattern>
+            <http-method>GET</http-method>
+            <http-method>POST</http-method>
+            <http-method>PUT</http-method>
+            <http-method>DELETE</http-method>
+        </web-resource-collection>
+        <auth-constraint>
+            <role-name>*</role-name>
+        </auth-constraint>
+    </security-constraint>
+
+    <!-- set up basic authentication on wild fly. This forces that every request the user must have a username and password,
+ unless end point is secure free -->
+    <login-config>
+        <auth-method>BASIC</auth-method>
+    </login-config>
+
+    <!-- Defined roles on the application -->
+    <security-role>
+        <role-name>EMPLOYEE</role-name>
+    </security-role>
+    <security-role>
+        <role-name>ADMINISTRATOR</role-name>
+    </security-role>
+    <security-role>
+        <role-name>CUSTOMER</role-name>
+    </security-role>
 
 </web-app>
