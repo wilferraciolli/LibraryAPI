@@ -26,12 +26,20 @@ import org.junit.runner.RunWith;
 import javax.ws.rs.core.Response;
 import java.net.URL;
 
+import static com.library.app.commontests.book.BookForTestsRepository.cleanCode;
 import static com.library.app.commontests.book.BookForTestsRepository.designPatterns;
+import static com.library.app.commontests.book.BookForTestsRepository.effectiveJava;
+import static com.library.app.commontests.book.BookForTestsRepository.peaa;
+import static com.library.app.commontests.book.BookForTestsRepository.refactoring;
 import static com.library.app.commontests.user.UserForTestsRepository.admin;
+import static com.library.app.commontests.user.UserForTestsRepository.johnDoe;
+import static com.library.app.commontests.utils.FileTestNameUtils.getPathFileResponse;
+import static com.library.app.commontests.utils.JsonTestUtils.assertJsonMatchesFileContent;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;
+
 
 /**
  * The type Book resource integration test.
@@ -83,6 +91,173 @@ public class BookResourceIntTest {
 
         findBookAndAssertResponseWithBook(bookId, designPatterns());
     }
+
+    /**
+     * Add book with null title.
+     */
+    @Test
+    @RunAsClient
+    public void addBookWithNullTitle() {
+        final Book book = normalizeDependenciesWithRest(cleanCode());
+        book.setTitle(null);
+        addBookWithValidationError(book, "bookErrorNullTitle.json");
+    }
+
+    /**
+     * Add book with inexistent category.
+     */
+    @Test
+    @RunAsClient
+    public void addBookWithInexistentCategory() {
+        final Book book = normalizeDependenciesWithRest(cleanCode());
+        book.getCategory().setId(999L);
+        addBookWithValidationError(book, "bookErrorInexistentCategory.json");
+    }
+
+    /**
+     * Add book with inexistent author.
+     */
+    @Test
+    @RunAsClient
+    public void addBookWithInexistentAuthor() {
+        final Book book = normalizeDependenciesWithRest(cleanCode());
+        book.getAuthors().get(0).setId(999L);
+        addBookWithValidationError(book, "bookErrorInexistentAuthor.json");
+    }
+
+    /**
+     * Update valid book.
+     */
+    @Test
+    @RunAsClient
+    public void updateValidBook() {
+        final Long bookId = addBookAndGetId(normalizeDependenciesWithRest(designPatterns()));
+        findBookAndAssertResponseWithBook(bookId, designPatterns());
+
+        final Book book = normalizeDependenciesWithRest(designPatterns());
+        book.setPrice(10D);
+        book.getAuthors().remove(0);
+
+        final Response response = resourceClient.resourcePath(PATH_RESOURCE + "/" + bookId).putWithContent(
+                getJsonForBook(book));
+        assertThat(response.getStatus(), is(equalTo(HttpCode.OK.getCode())));
+
+        findBookAndAssertResponseWithBook(bookId, book);
+    }
+
+    /**
+     * Update book not found.
+     */
+    @Test
+    @RunAsClient
+    public void updateBookNotFound() {
+        final Book book = normalizeDependenciesWithRest(cleanCode());
+        final Response response = resourceClient.resourcePath(PATH_RESOURCE + "/" + 999).putWithContent(
+                getJsonForBook(book));
+        assertThat(response.getStatus(), is(equalTo(HttpCode.NOT_FOUND.getCode())));
+    }
+
+    /**
+     * Find book not found.
+     */
+    @Test
+    @RunAsClient
+    public void findBookNotFound() {
+        final Response response = resourceClient.resourcePath(PATH_RESOURCE + "/" + 999).get();
+        assertThat(response.getStatus(), is(equalTo(HttpCode.NOT_FOUND.getCode())));
+    }
+
+    /**
+     * Find by filter paginating and ordering descending by title.
+     */
+    @Test
+    @RunAsClient
+    public void findByFilterPaginatingAndOrderingDescendingByTitle() {
+        resourceClient.resourcePath("DB/" + PATH_RESOURCE).postWithContent("");
+
+        // first page
+        Response response = resourceClient.resourcePath(PATH_RESOURCE + "?page=0&per_page=3&sort=-title").get();
+        assertThat(response.getStatus(), is(equalTo(HttpCode.OK.getCode())));
+        assertResponseContainsTheBooks(response, 5, refactoring(), peaa(), effectiveJava());
+
+        // second page
+        response = resourceClient.resourcePath(PATH_RESOURCE + "?page=1&per_page=3&sort=-title").get();
+        assertThat(response.getStatus(), is(equalTo(HttpCode.OK.getCode())));
+        assertResponseContainsTheBooks(response, 5, designPatterns(), cleanCode());
+    }
+
+    /**
+     * Find by filter with no user.
+     */
+    @Test
+    @RunAsClient
+    public void findByFilterWithNoUser() {
+        final Response response = resourceClient.user(null).resourcePath(PATH_RESOURCE).get();
+        assertThat(response.getStatus(), is(equalTo(HttpCode.UNAUTHORIZED.getCode())));
+    }
+
+    /**
+     * Find by filter with user customer.
+     */
+    @Test
+    @RunAsClient
+    public void findByFilterWithUserCustomer() {
+        final Response response = resourceClient.user(johnDoe()).resourcePath(PATH_RESOURCE).get();
+        assertThat(response.getStatus(), is(equalTo(HttpCode.OK.getCode())));
+    }
+
+    /**
+     * Find by id id with user customer.
+     */
+    @Test
+    @RunAsClient
+    public void findByIdIdWithUserCustomer() {
+        final Response response = resourceClient.user(johnDoe()).resourcePath(PATH_RESOURCE + "/999").get();
+        assertThat(response.getStatus(), is(equalTo(HttpCode.FORBIDDEN.getCode())));
+    }
+
+    /**
+     * Add book with validation error.
+     *
+     * @param bookToAdd        the book to add
+     * @param responseFileName the response file name
+     */
+    private void addBookWithValidationError(final Book bookToAdd, final String responseFileName) {
+        final Response response = resourceClient.resourcePath(PATH_RESOURCE).postWithContent(getJsonForBook(bookToAdd));
+        assertThat(response.getStatus(), is(equalTo(HttpCode.VALIDATION_ERROR.getCode())));
+        assertJsonResponseWithFile(response, responseFileName);
+    }
+
+    /**
+     * Assert json response with file.
+     *
+     * @param response the response
+     * @param fileName the file name
+     */
+    private void assertJsonResponseWithFile(final Response response, final String fileName) {
+        assertJsonMatchesFileContent(response.readEntity(String.class), getPathFileResponse(PATH_RESOURCE, fileName));
+    }
+
+    /**
+     * Assert response contains the books.
+     *
+     * @param response             the response
+     * @param expectedTotalRecords the expected total records
+     * @param expectedBooks        the expected books
+     */
+    private void assertResponseContainsTheBooks(final Response response, final int expectedTotalRecords,
+                                                final Book... expectedBooks) {
+
+        final JsonArray booksList = IntTestUtils.assertJsonHasTheNumberOfElementsAndReturnTheEntries(response,
+                expectedTotalRecords, expectedBooks.length);
+
+        for (int i = 0; i < expectedBooks.length; i++) {
+            final Book expectedBook = expectedBooks[i];
+            assertThat(booksList.get(i).getAsJsonObject().get("title").getAsString(),
+                    is(equalTo(expectedBook.getTitle())));
+        }
+    }
+
 
     /**
      * Add book and get id long. Helper method to get the id
