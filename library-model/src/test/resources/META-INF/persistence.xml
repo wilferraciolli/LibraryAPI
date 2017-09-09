@@ -13,6 +13,7 @@
         <class>com.library.app.user.model.User</class>
         <class>com.library.app.user.model.Customer</class>
         <class>com.library.app.user.model.Employee</class>
+        <class>com.library.app.book.model.Book</class>
 
         <!-- Properties that tells hibernate to automatically create this database and tables for testing -->
         <properties>
