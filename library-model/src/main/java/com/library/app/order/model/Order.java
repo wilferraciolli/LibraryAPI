@@ -39,7 +39,7 @@ public class Order implements Serializable {
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "created_at", updatable = false)
-    private Date createAt;
+    private Date createdAt;
 
     @ManyToOne
     @JoinColumn(name = "customer_id")
@@ -92,7 +92,7 @@ public class Order implements Serializable {
      * Instantiates a new Order.
      */
     public Order() {
-        this.createAt = new Date();
+        this.createdAt = new Date();
     }
 
     /**
@@ -167,21 +167,21 @@ public class Order implements Serializable {
     }
 
     /**
-     * Gets create at.
+     * Gets createdAt at.
      *
-     * @return the create at
+     * @return the createdAt at
      */
-    public Date getCreateAt() {
-        return createAt;
+    public Date getCreatedAt() {
+        return createdAt;
     }
 
     /**
-     * Sets create at.
+     * Sets createdAt at.
      *
-     * @param createAt the create at
+     * @param createdAt the createdAt at
      */
-    public void setCreateAt(final Date createAt) {
-        this.createAt = createAt;
+    public void setCreatedAt(final Date createdAt) {
+        this.createdAt = createdAt;
     }
 
     /**
@@ -312,7 +312,7 @@ public class Order implements Serializable {
 
     @Override
     public String toString() {
-        return "Order [id=" + id + ", createAt=" + createAt + ", customer=" + customer + ", total=" + total
+        return "Order [id=" + id + ", createdAt=" + createdAt + ", customer=" + customer + ", total=" + total
                 + ", currentStatus=" + currentStatus + "]";
     }
 
