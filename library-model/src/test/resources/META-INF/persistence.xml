@@ -14,6 +14,9 @@
         <class>com.library.app.user.model.Customer</class>
         <class>com.library.app.user.model.Employee</class>
         <class>com.library.app.book.model.Book</class>
+        <class>com.library.app.order.model.Order</class>
+        <class>com.library.app.order.model.OrderItem</class>
+        <class>com.library.app.order.model.OrderHistoryEntry</class>
 
         <!-- Properties that tells hibernate to automatically create this database and tables for testing -->
         <properties>
