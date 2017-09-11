@@ -203,6 +203,127 @@
 			]
 		},
 		{
+			"name": "Book",
+			"description": "",
+			"item": [
+				{
+					"name": "Get books",
+					"request": {
+						"url": "{{host}}books",
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Basic d2lsaWFtMzM0QGhvdG1haWwuY29tOjEyMzQ1Ng==",
+								"description": ""
+							}
+						],
+						"body": {},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Get book by id",
+					"request": {
+						"url": "{{host}}books/1",
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Basic YWRtQGRvbWFpbi5jb206MTIzNDU2",
+								"description": ""
+							}
+						],
+						"body": {},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Get bookswith filters",
+					"request": {
+						"url": {
+							"raw": "{{host}}books?categoryId=1",
+							"host": [
+								"{{host}}books"
+							],
+							"query": [
+								{
+									"key": "categoryId",
+									"value": "1",
+									"equals": true,
+									"description": ""
+								}
+							],
+							"variable": []
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Basic d2lsaWFtMzM0QGhvdG1haWwuY29tOjEyMzQ1Ng==",
+								"description": ""
+							}
+						],
+						"body": {},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Create book",
+					"request": {
+						"url": "{{host}}books",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							},
+							{
+								"key": "Authorization",
+								"value": "Basic YWRtQGRvbWFpbi5jb206MTIzNDU2",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\t\"title\": \"Clean Code: A Handbook of Agile Software Craftsmanship\",\r\n\t\"description\": \"Even bad code can function. But if code isn't clean, ...\",\r\n\t\"categoryId\": 1,\r\n\t\"authorsIds\": [2],\r\n\t\"price\": 35.06\r\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Update book",
+					"request": {
+						"url": "{{host}}books/2",
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							},
+							{
+								"key": "Authorization",
+								"value": "Basic YWRtQGRvbWFpbi5jb206MTIzNDU2",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"name\" : \"Wiliam Ferraciolli\"\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				}
+			]
+		},
+		{
 			"name": "User",
 			"description": "",
 			"item": [
