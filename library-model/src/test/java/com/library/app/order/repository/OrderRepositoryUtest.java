@@ -1,10 +1,15 @@
 package com.library.app.order.repository;
 
 import com.library.app.book.model.Book;
+import com.library.app.common.model.PaginatedData;
+import com.library.app.common.model.filter.PaginationData;
+import com.library.app.common.model.filter.PaginationData.OrderMode;
+import com.library.app.common.utils.DateUtils;
 import com.library.app.commontests.utils.TestBaseRepository;
 import com.library.app.order.model.Order;
 import com.library.app.order.model.Order.OrderStatus;
 import com.library.app.order.model.OrderItem;
+import com.library.app.order.model.filter.OrderFilter;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -14,6 +19,7 @@ import static com.library.app.commontests.book.BookForTestsRepository.allBooks;
 import static com.library.app.commontests.book.BookForTestsRepository.normalizeDependencies;
 import static com.library.app.commontests.category.CategoryForTestsRepository.allCategories;
 import static com.library.app.commontests.order.OrderForTestsRepository.normalizeDependencies;
+import static com.library.app.commontests.order.OrderForTestsRepository.orderCreatedAt;
 import static com.library.app.commontests.order.OrderForTestsRepository.orderDelivered;
 import static com.library.app.commontests.order.OrderForTestsRepository.orderReserved;
 import static com.library.app.commontests.user.UserForTestsRepository.allUsers;
@@ -114,6 +120,96 @@ public class OrderRepositoryUtest extends TestBaseRepository {
         assertThat(orderRepository.existsById(999l), is(equalTo(false)));
     }
 
+    /**
+     * Find by filter no filter.
+     */
+    @Test
+    public void findByFilterNoFilter() {
+        loadForFindByFilter();
+
+        final PaginatedData<Order> orders = orderRepository.findByFilter(new OrderFilter());
+        assertThat(orders.getNumberOfRows(), is(equalTo(3)));
+        assertThat(DateUtils.formatDateTime(orders.getRow(0).getCreatedAt()), is(equalTo("2015-01-08T10:10:21Z")));
+        assertThat(DateUtils.formatDateTime(orders.getRow(1).getCreatedAt()), is(equalTo("2015-01-07T10:10:21Z")));
+        assertThat(DateUtils.formatDateTime(orders.getRow(2).getCreatedAt()), is(equalTo("2015-01-06T10:10:21Z")));
+    }
+
+    /**
+     * Find by filter filtering by status.
+     */
+    @Test
+    public void findByFilterFilteringByStatus() {
+        loadForFindByFilter();
+
+        final OrderFilter filter = new OrderFilter();
+        filter.setStatus(OrderStatus.RESERVED);
+
+        final PaginatedData<Order> orders = orderRepository.findByFilter(filter);
+        assertThat(orders.getNumberOfRows(), is(equalTo(1)));
+        assertThat(DateUtils.formatDateTime(orders.getRow(0).getCreatedAt()), is(equalTo("2015-01-06T10:10:21Z")));
+    }
+
+    /**
+     * Find by filter filtering by customer ordering by creation ascending.
+     */
+    @Test
+    public void findByFilterFilteringByCustomerOrderingByCreationAscending() {
+        loadForFindByFilter();
+
+        final OrderFilter filter = new OrderFilter();
+        filter.setCustomerId(normalizeDependencies(orderDelivered(), em).getCustomer().getId());
+        filter.setPaginationData(new PaginationData(0, 10, "createdAt", OrderMode.ASCENDING));
+
+        final PaginatedData<Order> orders = orderRepository.findByFilter(filter);
+        assertThat(orders.getNumberOfRows(), is(equalTo(2)));
+        assertThat(DateUtils.formatDateTime(orders.getRow(0).getCreatedAt()), is(equalTo("2015-01-07T10:10:21Z")));
+        assertThat(DateUtils.formatDateTime(orders.getRow(1).getCreatedAt()), is(equalTo("2015-01-08T10:10:21Z")));
+    }
+
+    /**
+     * Find by filter filtering by date.
+     */
+    @Test
+    public void findByFilterFilteringByDate() {
+        loadForFindByFilter();
+
+        final OrderFilter filter = new OrderFilter();
+        filter.setStartDate(DateUtils.getAsDateTime("2015-01-07T10:10:21Z"));
+        filter.setEndDate(DateUtils.getAsDateTime("2015-01-08T10:10:21Z"));
+
+        final PaginatedData<Order> orders = orderRepository.findByFilter(filter);
+        assertThat(orders.getNumberOfRows(), is(equalTo(2)));
+        assertThat(DateUtils.formatDateTime(orders.getRow(0).getCreatedAt()), is(equalTo("2015-01-08T10:10:21Z")));
+        assertThat(DateUtils.formatDateTime(orders.getRow(1).getCreatedAt()), is(equalTo("2015-01-07T10:10:21Z")));
+    }
+
+    /**
+     * Load for find by filter. Helper method to help with find orders by filter.
+     */
+    private void loadForFindByFilter() {
+        final Order order1 = normalizeDependencies(orderReserved(), em);
+        orderCreatedAt(order1, "2015-01-06T10:10:21Z");
+
+        final Order order2 = normalizeDependencies(orderDelivered(), em);
+        orderCreatedAt(order2, "2015-01-07T10:10:21Z");
+
+        final Order order3 = normalizeDependencies(orderDelivered(), em);
+        orderCreatedAt(order3, "2015-01-08T10:10:21Z");
+
+        dbCommandExecutor.executeCommand(() -> {
+            orderRepository.add(order1);
+            orderRepository.add(order2);
+            orderRepository.add(order3);
+            return null;
+        });
+    }
+
+    /**
+     * Assert actual order with expected order.
+     *
+     * @param actualOrder   the actual order
+     * @param expectedOrder the expected order
+     */
     private void assertActualOrderWithExpectedOrder(final Order actualOrder, final Order expectedOrder) {
         assertThat(expectedOrder.getCreatedAt(), is(notNullValue()));
         assertThat(actualOrder.getCustomer(), is(equalTo(expectedOrder.getCustomer())));

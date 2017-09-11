@@ -97,6 +97,7 @@ public final class OrderForTestsRepository {
     public static Order normalizeDependencies(final Order order, final EntityManager em) {
         order.setCustomer(findByPropertyNameAndValue(em, Customer.class, "name", order.getCustomer()
                 .getName()));
+
         for (final OrderItem item : order.getItems()) {
             item.setBook(findByPropertyNameAndValue(em, Book.class, "title", item.getBook().getTitle()));
         }

@@ -15,7 +15,7 @@ public final class DateUtils {
     }
 
     /**
-     * Gets as date time. Format into instant date and time
+     * Gets as date time. Format into instant date and time.
      *
      * @param dateTime the date time
      * @return the as date time
@@ -29,7 +29,7 @@ public final class DateUtils {
     }
 
     /**
-     * Format date time string.
+     * Format date time string as instance date and time.
      *
      * @param date the date
      * @return the string
