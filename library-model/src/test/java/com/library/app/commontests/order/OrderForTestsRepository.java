@@ -37,9 +37,16 @@ public final class OrderForTestsRepository {
         order.addItem(bookWithId(designPatterns(), 1L), 2);
         order.addItem(bookWithId(refactoring(), 2L), 1);
 
+        //set default values to an order
         order.setInitialStatus();
         order.calculateTotal();
 
+        //add 1 millisecond to order so they can be sorted by time
+        try {
+            Thread.sleep(1);
+        } catch (final InterruptedException e) {
+            e.printStackTrace();
+        }
         order.addHistoryEntry(OrderStatus.DELIVERED);
 
         return order;
