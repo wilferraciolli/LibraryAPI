@@ -15,6 +15,7 @@ import static com.library.app.commontests.book.BookForTestsRepository.designPatt
 import static com.library.app.commontests.book.BookForTestsRepository.refactoring;
 import static com.library.app.commontests.user.UserForTestsRepository.johnDoe;
 import static com.library.app.commontests.user.UserForTestsRepository.mary;
+import static com.library.app.commontests.utils.TestRepositoryUtils.findByPropertyNameAndValue;
 
 /**
  * The type Order for tests repository. Helper method to create some dummy orders.
@@ -109,16 +110,6 @@ public final class OrderForTestsRepository {
             item.setBook(findByPropertyNameAndValue(em, Book.class, "title", item.getBook().getTitle()));
         }
         return order;
-    }
-
-    @SuppressWarnings("unchecked")
-    private static <T> T findByPropertyNameAndValue(final EntityManager em, final Class<T> clazz,
-                                                    final String propertyName, final String propertyValue) {
-        return (T) em
-                .createQuery("Select o From " + clazz.getSimpleName() +
-                        " o Where o." + propertyName + " = :propertyValue")
-                .setParameter("propertyValue", propertyValue)
-                .getSingleResult();
     }
 
 }

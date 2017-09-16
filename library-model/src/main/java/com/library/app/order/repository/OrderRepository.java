@@ -17,9 +17,6 @@ import java.util.Map;
 @Stateless
 public class OrderRepository extends GenericRepository<Order> {
 
-    /**
-     * The Entity manager.
-     */
     @PersistenceContext
     EntityManager em;
 
@@ -31,6 +28,19 @@ public class OrderRepository extends GenericRepository<Order> {
     @Override
     protected EntityManager getEntityManager() {
         return em;
+    }
+
+    @Override
+    public Order findById(final Long id) {
+        //Override the find by id method to for the laziness collection on order to be fetched from the database before the connection closes.
+        final Order order = super.findById(id);
+        if (order != null) {
+            //load all of its lazinees collections
+            order.getItems().size();
+            order.getHistoryEntries().size();
+        }
+
+        return order;
     }
 
     /**

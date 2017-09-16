@@ -23,6 +23,7 @@ import static com.library.app.commontests.author.AuthorForTestsRepository.robert
 import static com.library.app.commontests.author.AuthorForTestsRepository.williamOpdyke;
 import static com.library.app.commontests.category.CategoryForTestsRepository.architecture;
 import static com.library.app.commontests.category.CategoryForTestsRepository.java;
+import static com.library.app.commontests.utils.TestRepositoryUtils.findByPropertyNameAndValue;
 
 /**
  * The type Book for tests repository.
@@ -159,16 +160,6 @@ public final class BookForTestsRepository {
         }
 
         return book;
-    }
-
-    @SuppressWarnings("unchecked")
-    private static <T> T findByPropertyNameAndValue(final EntityManager em, final Class<T> clazz,
-                                                    final String propertyName, final String propertyValue) {
-        return (T) em
-                .createQuery("Select o From " + clazz.getSimpleName() +
-                        " o Where o." + propertyName + " = :propertyValue")
-                .setParameter("propertyValue", propertyValue)
-                .getSingleResult();
     }
 
 }
