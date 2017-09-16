@@ -53,32 +53,20 @@ public class OrderResource {
 
     private static final ResourceMessage RESOURCE_MESSAGE = new ResourceMessage("order");
 
-    /**
-     * The Order services.
-     */
     @Inject
     OrderServices orderServices;
 
-    /**
-     * The Order json converter.
-     */
     @Inject
     OrderJsonConverter orderJsonConverter;
 
-    /**
-     * The Security context.
-     */
     @Context
     SecurityContext securityContext;
 
-    /**
-     * The Uri info.
-     */
     @Context
     UriInfo uriInfo;
 
     /**
-     * Add response.
+     * Add/create order response. Only customer can create orders.
      *
      * @param body the body
      * @return the response
@@ -127,6 +115,8 @@ public class OrderResource {
 
         final OrderStatus status = getStatusFromJson(body);
         if (status == OrderStatus.RESERVATION_EXPIRED) {
+
+            //orders ecpired cannot be updated the status
             return Response.status(HttpCode.FORBIDDEN.getCode()).build();
         }
 

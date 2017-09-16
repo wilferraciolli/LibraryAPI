@@ -64,6 +64,12 @@ public class Book implements Serializable {
 
     /**
      * Instantiates a new Book.
+     */
+    public Book() {
+    }
+
+    /**
+     * Instantiates a new Book.
      *
      * @param bookId the book id
      */
