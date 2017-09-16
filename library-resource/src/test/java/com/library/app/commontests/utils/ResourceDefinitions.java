@@ -25,7 +25,11 @@ public enum ResourceDefinitions {
     /**
      * Book resource definitions.
      */
-    BOOK("books");
+    BOOK("books"),
+    /**
+     * Order resource definitions.
+     */
+    ORDER("orders");
 
     private final String resourceName;
 

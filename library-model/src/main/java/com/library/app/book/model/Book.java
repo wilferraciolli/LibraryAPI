@@ -63,6 +63,15 @@ public class Book implements Serializable {
     private Double price;
 
     /**
+     * Instantiates a new Book.
+     *
+     * @param bookId the book id
+     */
+    public Book(final Long bookId) {
+        this.id = bookId;
+    }
+
+    /**
      * Gets id.
      *
      * @return the id
