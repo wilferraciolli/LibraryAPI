@@ -2,12 +2,20 @@ package com.library.app.order.services.impl;
 
 import com.library.app.book.model.Book;
 import com.library.app.book.services.BookServices;
+import com.library.app.common.exception.UserNotAuthorizedException;
+import com.library.app.common.model.PaginatedData;
+import com.library.app.common.utils.ValidationUtils;
+import com.library.app.order.exception.OrderNotFoundException;
+import com.library.app.order.exception.OrderStatusCannotBeChangedException;
 import com.library.app.order.model.Order;
+import com.library.app.order.model.Order.OrderStatus;
 import com.library.app.order.model.OrderItem;
+import com.library.app.order.model.filter.OrderFilter;
 import com.library.app.order.repository.OrderRepository;
 import com.library.app.order.services.OrderServices;
 import com.library.app.user.model.Customer;
 import com.library.app.user.model.User;
+import com.library.app.user.model.User.Roles;
 import com.library.app.user.services.UserServices;
 
 import javax.annotation.Resource;
@@ -22,33 +30,18 @@ import javax.validation.Validator;
 @Stateless
 public class OrderServicesImpl implements OrderServices {
 
-    /**
-     * The Order repository.
-     */
     @Inject
     OrderRepository orderRepository;
 
-    /**
-     * The User services.
-     */
     @Inject
     UserServices userServices;
 
-    /**
-     * The Book services.
-     */
     @Inject
     BookServices bookServices;
 
-    /**
-     * The Validator.
-     */
     @Inject
     Validator validator;
 
-    /**
-     * The Session context.
-     */
     @Resource
     SessionContext sessionContext;
 
@@ -57,7 +50,56 @@ public class OrderServicesImpl implements OrderServices {
         checkCustomerAndSetItOnOrder(order);
         checkBooksForItemsAndSetThem(order);
 
-        return null;
+        order.setInitialStatus();
+        order.calculateTotal();
+
+        //validate base entity
+        ValidationUtils.validateEntityFields(validator, order);
+
+        return orderRepository.add(order);
+    }
+
+    @Override
+    public Order findById(final Long id) {
+        final Order order = orderRepository.findById(id);
+        if (order == null) {
+            throw new OrderNotFoundException();
+        }
+        return order;
+    }
+
+    @Override
+    public void updateStatus(final Long id, final OrderStatus newStatus) {
+        final Order order = findById(id);
+
+        //check that is an employee who is setting the order to delivered
+        if (newStatus == OrderStatus.DELIVERED) {
+            if (!sessionContext.isCallerInRole(Roles.EMPLOYEE.name())) {
+                throw new UserNotAuthorizedException();
+            }
+        }
+
+        //check that is a customer cancelling the order, and is order owner
+        if (newStatus == OrderStatus.CANCELLED) {
+            if (sessionContext.isCallerInRole(Roles.CUSTOMER.name())) {
+                if (!order.getCustomer().getEmail().equals(sessionContext.getCallerPrincipal().getName())) {
+                    throw new UserNotAuthorizedException();
+                }
+            }
+        }
+
+        try {
+            order.addHistoryEntry(newStatus);
+        } catch (final IllegalArgumentException e) {
+            throw new OrderStatusCannotBeChangedException(e.getMessage());
+        }
+
+        orderRepository.update(order);
+    }
+
+    @Override
+    public PaginatedData<Order> findByFilter(final OrderFilter orderFilter) {
+        return orderRepository.findByFilter(orderFilter);
     }
 
     /**
