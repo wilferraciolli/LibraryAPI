@@ -315,7 +315,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"name\" : \"Wiliam Ferraciolli\"\n}"
+							"raw": "{\n\t\"title\": \"Do Androids Dream of Electric Sheepp\",\n\t\"description\": \"Even bad code can function. But if code isn't clean, ...\",\n\t\"categoryId\": 1,\n\t\"authorsIds\": [2],\n\t\"price\": 35.06\n}"
 						},
 						"description": ""
 					},
@@ -473,6 +473,182 @@
 							"mode": "raw",
 							"raw": "{\r\n    \"password\": \"123456\"\r\n}"
 						},
+						"description": ""
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Orders",
+			"description": "",
+			"item": [
+				{
+					"name": "Get all orders",
+					"request": {
+						"url": "{{host}}orders",
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Basic YWRtQGRvbWFpbi5jb206MTIzNDU2",
+								"description": ""
+							}
+						],
+						"body": {},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Get all orders filtered by date",
+					"request": {
+						"url": {
+							"raw": "{{host}}orders?startDate=2017-09-18T19:07:00Z&endDate=2017-09-18T19:07:45Z",
+							"host": [
+								"{{host}}orders"
+							],
+							"query": [
+								{
+									"key": "startDate",
+									"value": "2017-09-18T19:07:00Z",
+									"equals": true,
+									"description": ""
+								},
+								{
+									"key": "endDate",
+									"value": "2017-09-18T19:07:45Z",
+									"equals": true,
+									"description": ""
+								}
+							],
+							"variable": []
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Basic YWRtQGRvbWFpbi5jb206MTIzNDU2",
+								"description": ""
+							}
+						],
+						"body": {},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Get all orders filtered by date and status",
+					"request": {
+						"url": {
+							"raw": "{{host}}orders?startDate=2017-09-18T19:07:00Z&endDate=2017-10-18T19:07:45Z&status=DELIVERED",
+							"host": [
+								"{{host}}orders"
+							],
+							"query": [
+								{
+									"key": "startDate",
+									"value": "2017-09-18T19:07:00Z",
+									"equals": true,
+									"description": ""
+								},
+								{
+									"key": "endDate",
+									"value": "2017-10-18T19:07:45Z",
+									"equals": true,
+									"description": ""
+								},
+								{
+									"key": "status",
+									"value": "DELIVERED",
+									"equals": true,
+									"description": ""
+								}
+							],
+							"variable": []
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Basic YWRtQGRvbWFpbi5jb206MTIzNDU2",
+								"description": ""
+							}
+						],
+						"body": {},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Create order",
+					"request": {
+						"url": "{{host}}orders",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Basic d2lsaWFtMzM0QGhvdG1haWwuY29tOjEyMzQ1Ng==",
+								"description": ""
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"items\": [\n        {\n            \"bookId\": 1,\n            \"quantity\": 1\n        }\n    ]\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Update orders status",
+					"request": {
+						"url": "{{host}}orders/1/status",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Basic d2lsaWFtMzM0QGhvdG1haWwuY29tOjEyMzQ1Ng==",
+								"description": ""
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"status\" : \"CANCELLED\"\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Log Audit",
+			"description": "",
+			"item": [
+				{
+					"name": "Get Log Audits",
+					"request": {
+						"url": "{{host}}/logsaudit",
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Basic YWRtQGRvbWFpbi5jb206MTIzNDU2",
+								"description": ""
+							}
+						],
+						"body": {},
 						"description": ""
 					},
 					"response": []
