@@ -9,6 +9,7 @@ import com.library.app.commontests.utils.ArquillianTestUtils;
 import com.library.app.commontests.utils.IntTestUtils;
 import com.library.app.commontests.utils.ResourceClient;
 import com.library.app.commontests.utils.ResourceDefinitions;
+import com.library.app.logaudit.model.LogAudit;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit.Arquillian;
@@ -33,6 +34,7 @@ import static com.library.app.commontests.author.AuthorForTestsRepository.ralphJ
 import static com.library.app.commontests.author.AuthorForTestsRepository.richardHelm;
 import static com.library.app.commontests.author.AuthorForTestsRepository.robertMartin;
 import static com.library.app.commontests.author.AuthorForTestsRepository.williamOpdyke;
+import static com.library.app.commontests.logaudit.LogAuditTestUtils.assertAuditLogs;
 import static com.library.app.commontests.user.UserForTestsRepository.admin;
 import static com.library.app.commontests.user.UserForTestsRepository.johnDoe;
 import static com.library.app.commontests.utils.FileTestNameUtils.getPathFileRequest;
@@ -56,6 +58,7 @@ public class AuthorResourceIntTest {
 
     //get the authors path
     private static final String PATH_RESOURCE = ResourceDefinitions.AUTHOR.getResourceName();
+    private static final String ELEMENT_NAME = Author.class.getSimpleName();
 
     /**
      * Create deployment web archive. This creates a war file with for integration tests.
@@ -88,6 +91,8 @@ public class AuthorResourceIntTest {
     public void addValidAuthorAndFindIt() {
         final Long authorId = addAuthorAndGetId("robertMartin.json");
         findAuthorAndAssertResponseWithAuthor(authorId, robertMartin());
+
+        assertAuditLogs(resourceClient, 1, new LogAudit(admin(), LogAudit.Action.ADD, ELEMENT_NAME));
     }
 
     /**
@@ -101,6 +106,8 @@ public class AuthorResourceIntTest {
 
         assertThat(response.getStatus(), is(equalTo(HttpCode.VALIDATION_ERROR.getCode())));
         assertJsonResponseWithFile(response, "authorErrorNullName.json");
+
+        assertAuditLogs(resourceClient, 0);
     }
 
     /**
@@ -119,6 +126,10 @@ public class AuthorResourceIntTest {
         final Author uncleBob = new Author();
         uncleBob.setName("Uncle Bob");
         findAuthorAndAssertResponseWithAuthor(authorId, uncleBob);
+
+        assertAuditLogs(resourceClient, 2,
+                new LogAudit(admin(), LogAudit.Action.ADD, ELEMENT_NAME),
+                new LogAudit(admin(), LogAudit.Action.UPDATE, ELEMENT_NAME));
     }
 
     /**
@@ -130,6 +141,8 @@ public class AuthorResourceIntTest {
         final Response response = resourceClient.resourcePath(PATH_RESOURCE + "/" + 999).putWithFile(
                 getPathFileRequest(PATH_RESOURCE, "robertMartin.json"));
         assertThat(response.getStatus(), is(equalTo(HttpCode.NOT_FOUND.getCode())));
+
+        assertAuditLogs(resourceClient, 0);
     }
 
     /**
@@ -140,6 +153,8 @@ public class AuthorResourceIntTest {
     public void findAuthorNotFound() {
         final Response response = resourceClient.resourcePath(PATH_RESOURCE + "/" + 999).get();
         assertThat(response.getStatus(), is(equalTo(HttpCode.NOT_FOUND.getCode())));
+
+        assertAuditLogs(resourceClient, 0);
     }
 
     /**
@@ -161,6 +176,8 @@ public class AuthorResourceIntTest {
         response = resourceClient.resourcePath(PATH_RESOURCE + "?page=1&per_page=10&sort=-name").get();
         assertThat(response.getStatus(), is(equalTo(HttpCode.OK.getCode())));
         assertResponseContainsTheAuthors(response, 12, erichGamma(), donRoberts());
+
+        assertAuditLogs(resourceClient, 12);
     }
 
     /**
@@ -171,6 +188,8 @@ public class AuthorResourceIntTest {
     public void findByFilterWithNoUser() {
         final Response response = resourceClient.user(null).resourcePath(PATH_RESOURCE).get();
         assertThat(response.getStatus(), is(equalTo(HttpCode.UNAUTHORIZED.getCode())));
+
+        assertAuditLogs(resourceClient, 0);
     }
 
     /**
@@ -181,6 +200,8 @@ public class AuthorResourceIntTest {
     public void findByFilterWithUserCustomer() {
         final Response response = resourceClient.user(johnDoe()).resourcePath(PATH_RESOURCE).get();
         assertThat(response.getStatus(), is(equalTo(HttpCode.OK.getCode())));
+
+        assertAuditLogs(resourceClient, 0);
     }
 
     /**

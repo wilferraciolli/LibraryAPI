@@ -9,6 +9,7 @@ import com.library.app.commontests.utils.ArquillianTestUtils;
 import com.library.app.commontests.utils.IntTestUtils;
 import com.library.app.commontests.utils.ResourceClient;
 import com.library.app.commontests.utils.ResourceDefinitions;
+import com.library.app.logaudit.model.LogAudit;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit.Arquillian;
@@ -25,6 +26,7 @@ import static com.library.app.commontests.category.CategoryForTestsRepository.ar
 import static com.library.app.commontests.category.CategoryForTestsRepository.cleanCode;
 import static com.library.app.commontests.category.CategoryForTestsRepository.java;
 import static com.library.app.commontests.category.CategoryForTestsRepository.networks;
+import static com.library.app.commontests.logaudit.LogAuditTestUtils.assertAuditLogs;
 import static com.library.app.commontests.user.UserForTestsRepository.admin;
 import static com.library.app.commontests.user.UserForTestsRepository.johnDoe;
 import static com.library.app.commontests.utils.FileTestNameUtils.getPathFileRequest;
@@ -59,6 +61,7 @@ public class CategoryResourceIntTest {
 
     //name of the element we are using when creating the resource definition class
     private static final String PATH_RESOURCE = ResourceDefinitions.CATEGORY.getResourceName();
+    private static final String ELEMENT_NAME = Category.class.getSimpleName();
 
     /**
      * Define which archive Arquillian will generate and set its properties.This defines that all the classes under
@@ -99,6 +102,8 @@ public class CategoryResourceIntTest {
 
         //find the category and compare to see if it is the expected value
         findCategoryAndAssertResponseWithCategory(id, java());
+
+        assertAuditLogs(resourceClient, 1, new LogAudit(admin(), LogAudit.Action.ADD, ELEMENT_NAME));
     }
 
     /**
@@ -114,6 +119,8 @@ public class CategoryResourceIntTest {
         assertThat(response.getStatus(), is(equalTo(HttpCode.VALIDATION_ERROR.getCode())));
         //assert that the error message was the same on the template file
         assertJsonResponseWithFile(response, "categoryErrorNullName.json");
+
+        assertAuditLogs(resourceClient, 0);
     }
 
     /**
@@ -132,6 +139,8 @@ public class CategoryResourceIntTest {
         //assert that category already exixts validation was triggered
         assertThat(response.getStatus(), is(equalTo(HttpCode.VALIDATION_ERROR.getCode())));
         assertJsonResponseWithFile(response, "categoryAlreadyExists.json");
+
+        assertAuditLogs(resourceClient, 1, new LogAudit(admin(), LogAudit.Action.ADD, ELEMENT_NAME));
     }
 
     /**
@@ -154,6 +163,11 @@ public class CategoryResourceIntTest {
 
         //assert that the category name is now Clean Code
         findCategoryAndAssertResponseWithCategory(id, cleanCode());
+
+        assertAuditLogs(resourceClient, 2,
+                new LogAudit(admin(), LogAudit.Action.ADD, ELEMENT_NAME),
+                new LogAudit(admin(), LogAudit.Action.UPDATE, ELEMENT_NAME));
+
     }
 
     /**
@@ -174,6 +188,10 @@ public class CategoryResourceIntTest {
         //assert that a categoryName already exists exception was thrown
         assertThat(response.getStatus(), is(equalTo(HttpCode.VALIDATION_ERROR.getCode())));
         assertJsonResponseWithFile(response, "categoryAlreadyExists.json");
+
+        assertAuditLogs(resourceClient, 2,
+                new LogAudit(admin(), LogAudit.Action.ADD, ELEMENT_NAME),
+                new LogAudit(admin(), LogAudit.Action.ADD, ELEMENT_NAME));
     }
 
     /**
@@ -188,6 +206,8 @@ public class CategoryResourceIntTest {
 
         //assert that category was not found exception was thrown
         assertThat(response.getStatus(), is(equalTo(HttpCode.NOT_FOUND.getCode())));
+
+        assertAuditLogs(resourceClient, 0);
     }
 
     /**
@@ -201,6 +221,8 @@ public class CategoryResourceIntTest {
 
         //assert that a category was not found
         assertThat(response.getStatus(), is(equalTo(HttpCode.NOT_FOUND.getCode())));
+
+        assertAuditLogs(resourceClient, 0);
     }
 
     /**
@@ -220,6 +242,8 @@ public class CategoryResourceIntTest {
 
         //assert that the response contains the expected categories
         assertResponseContainsTheCategories(response, 4, architecture(), cleanCode(), java(), networks());
+
+        assertAuditLogs(resourceClient, 4);
     }
 
 
@@ -231,6 +255,8 @@ public class CategoryResourceIntTest {
     public void findAllCategoriesWithNoUser() {
         final Response response = resourceClient.user(null).resourcePath(PATH_RESOURCE).get();
         assertThat(response.getStatus(), is(equalTo(HttpCode.UNAUTHORIZED.getCode())));
+
+        assertAuditLogs(resourceClient, 0);
     }
 
     /**
@@ -241,6 +267,8 @@ public class CategoryResourceIntTest {
     public void findAllCategoriesWithUserCustomer() {
         final Response response = resourceClient.user(johnDoe()).resourcePath(PATH_RESOURCE).get();
         assertThat(response.getStatus(), is(equalTo(HttpCode.OK.getCode())));
+
+        assertAuditLogs(resourceClient, 0);
     }
 
     /**
@@ -251,6 +279,8 @@ public class CategoryResourceIntTest {
     public void findCategoryByIdWithUserCustomer() {
         final Response response = resourceClient.user(johnDoe()).resourcePath(PATH_RESOURCE + "/999").get();
         assertThat(response.getStatus(), is(equalTo(HttpCode.FORBIDDEN.getCode())));
+
+        assertAuditLogs(resourceClient, 0);
     }
 
     /**
