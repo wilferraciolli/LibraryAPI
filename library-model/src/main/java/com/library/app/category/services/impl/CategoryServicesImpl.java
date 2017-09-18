@@ -6,9 +6,13 @@ import com.library.app.category.model.Category;
 import com.library.app.category.repository.CategoryRepository;
 import com.library.app.category.services.CategoryServices;
 import com.library.app.common.utils.ValidationUtils;
+import com.library.app.logaudit.interceptor.Auditable;
+import com.library.app.logaudit.interceptor.LogAuditInterceptor;
+import com.library.app.logaudit.model.LogAudit;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.interceptor.Interceptors;
 import javax.validation.Validator;
 import java.util.List;
 
@@ -19,6 +23,7 @@ import java.util.List;
  * @author wilferaciolli
  */
 @Stateless
+@Interceptors(LogAuditInterceptor.class)
 public class CategoryServicesImpl implements CategoryServices {
 
     // String to define which column to order by when passing values to a database.
@@ -34,6 +39,7 @@ public class CategoryServicesImpl implements CategoryServices {
 
     // note that on the interface it has all the exception that it may throw
     @Override
+    @Auditable(action = LogAudit.Action.ADD)
     public Category add(final Category category) {
         // check for constraints violations
         validateCategory(category);
@@ -43,6 +49,7 @@ public class CategoryServicesImpl implements CategoryServices {
 
     // method to update a category.
     @Override
+    @Auditable(action = LogAudit.Action.UPDATE)
     public void update(final Category category) {
         // check for constraints violations
         validateCategory(category);
