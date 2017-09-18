@@ -115,7 +115,6 @@ public class OrderResource {
 
         final OrderStatus status = getStatusFromJson(body);
         if (status == OrderStatus.RESERVATION_EXPIRED) {
-
             //orders ecpired cannot be updated the status
             return Response.status(HttpCode.FORBIDDEN.getCode()).build();
         }
