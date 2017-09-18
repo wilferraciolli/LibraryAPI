@@ -29,7 +29,11 @@ public enum ResourceDefinitions {
     /**
      * Order resource definitions.
      */
-    ORDER("orders");
+    ORDER("orders"),
+    /**
+     * Log audit resource definitions.
+     */
+    LOGAUDIT("logsaudit");
 
     private final String resourceName;
 
