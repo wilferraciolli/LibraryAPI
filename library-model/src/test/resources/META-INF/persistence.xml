@@ -17,6 +17,7 @@
         <class>com.library.app.order.model.Order</class>
         <class>com.library.app.order.model.OrderItem</class>
         <class>com.library.app.order.model.OrderHistoryEntry</class>
+        <class>com.library.app.logaudit.model.LogAudit</class>
 
         <!-- Properties that tells hibernate to automatically create this database and tables for testing -->
         <properties>
