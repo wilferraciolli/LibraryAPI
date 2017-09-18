@@ -242,8 +242,6 @@ public class CategoryResourceIntTest {
 
         //assert that the response contains the expected categories
         assertResponseContainsTheCategories(response, 4, architecture(), cleanCode(), java(), networks());
-
-        assertAuditLogs(resourceClient, 4);
     }
 
 

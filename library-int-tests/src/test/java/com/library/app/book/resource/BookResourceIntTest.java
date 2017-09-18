@@ -203,8 +203,6 @@ public class BookResourceIntTest {
         response = resourceClient.resourcePath(PATH_RESOURCE + "?page=1&per_page=3&sort=-title").get();
         assertThat(response.getStatus(), is(equalTo(HttpCode.OK.getCode())));
         assertResponseContainsTheBooks(response, 5, designPatterns(), cleanCode());
-
-        assertAuditLogs(resourceClient, 0);
     }
 
     /**

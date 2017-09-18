@@ -176,8 +176,6 @@ public class AuthorResourceIntTest {
         response = resourceClient.resourcePath(PATH_RESOURCE + "?page=1&per_page=10&sort=-name").get();
         assertThat(response.getStatus(), is(equalTo(HttpCode.OK.getCode())));
         assertResponseContainsTheAuthors(response, 12, erichGamma(), donRoberts());
-
-        assertAuditLogs(resourceClient, 12);
     }
 
     /**
@@ -188,8 +186,6 @@ public class AuthorResourceIntTest {
     public void findByFilterWithNoUser() {
         final Response response = resourceClient.user(null).resourcePath(PATH_RESOURCE).get();
         assertThat(response.getStatus(), is(equalTo(HttpCode.UNAUTHORIZED.getCode())));
-
-        assertAuditLogs(resourceClient, 0);
     }
 
     /**
@@ -200,8 +196,6 @@ public class AuthorResourceIntTest {
     public void findByFilterWithUserCustomer() {
         final Response response = resourceClient.user(johnDoe()).resourcePath(PATH_RESOURCE).get();
         assertThat(response.getStatus(), is(equalTo(HttpCode.OK.getCode())));
-
-        assertAuditLogs(resourceClient, 0);
     }
 
     /**
