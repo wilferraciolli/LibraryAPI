@@ -14,14 +14,14 @@ import javax.ws.rs.Path;
 public class DBResource {
 
     @Inject
-    private TestRepositoryEJB tesRepositoryEJB;
+    private TestRepositoryEJB testRepositoryEJB;
 
     /**
      * Method to clean up the database.
      */
     @DELETE
     public void deleteAll() {
-        tesRepositoryEJB.deleteAll();
+        testRepositoryEJB.deleteAll();
     }
 
 }
