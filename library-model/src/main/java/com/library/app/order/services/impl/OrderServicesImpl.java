@@ -24,6 +24,7 @@ import org.slf4j.LoggerFactory;
 import javax.annotation.Resource;
 import javax.ejb.SessionContext;
 import javax.ejb.Stateless;
+import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import javax.validation.Validator;
 
@@ -45,6 +46,9 @@ public class OrderServicesImpl implements OrderServices {
     @Inject
     Validator validator;
 
+    @Inject
+    private Event<Order> orderEventSender;
+
     @Resource
     SessionContext sessionContext;
 
@@ -60,6 +64,9 @@ public class OrderServicesImpl implements OrderServices {
 
         //validate base entity
         ValidationUtils.validateEntityFields(validator, order);
+
+        //publish the event when order was placed
+        sendEvent(order);
 
         return orderRepository.add(order);
     }
@@ -98,6 +105,9 @@ public class OrderServicesImpl implements OrderServices {
         } catch (final IllegalArgumentException e) {
             throw new OrderStatusCannotBeChangedException(e.getMessage());
         }
+
+        //publish the event when order was updated
+        sendEvent(order);
 
         orderRepository.update(order);
     }
@@ -148,6 +158,15 @@ public class OrderServicesImpl implements OrderServices {
                 item.setBook(book);
             }
         }
+    }
+
+    /**
+     * Send event. This method will publish an event so decoupled objects can use it.
+     *
+     * @param order the order
+     */
+    public void sendEvent(final Order order) {
+        orderEventSender.fire(order);
     }
 
 }
