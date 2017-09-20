@@ -599,7 +599,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"items\": [\n        {\n            \"bookId\": 1,\n            \"quantity\": 1\n        }\n    ]\n}"
+							"raw": "{\n    \"items\": [\n         {\n            \"bookId\": 1,\n            \"quantity\": 2\n        },\n        {\n            \"bookId\": 2,\n            \"quantity\": 1\n        },\n        {\n            \"bookId\": 4,\n            \"quantity\": 5\n        }\n    ]\n}"
 						},
 						"description": ""
 					},
