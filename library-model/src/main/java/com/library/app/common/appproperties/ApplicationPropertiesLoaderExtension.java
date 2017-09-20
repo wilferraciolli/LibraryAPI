@@ -74,7 +74,7 @@ public class ApplicationPropertiesLoaderExtension implements Extension {
                                 //get the value and convert it onto Integer
                                 final String value = getPropertyValue(propertyName);
                                 field.set(instance, Integer.valueOf(value));
-                                logger.debug("Value of the field {} set with value{}", field.getName(), value);
+                                logger.debug("Value of the field {} set with value {}", field.getName(), value);
                             } else {
                                 logger.warn("Type of field not supported: {}", fieldType);
                             }

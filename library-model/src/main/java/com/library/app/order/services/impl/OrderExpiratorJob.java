@@ -25,8 +25,9 @@ public class OrderExpiratorJob {
     private Integer daysBeforeOrderExpiration;
 
     /**
-     * Run.
+     * Run. the batch job. commented out code triggers it to run every minute.
      */
+    //@Schedule(hour = "*", minute = "*", persistent = false)
     @Schedule(hour = "*/1", minute = "0", second = "0", persistent = false)
     public void run() {
         logger.debug("Executing order expirator job");
