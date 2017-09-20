@@ -52,4 +52,13 @@ public class TestRepositoryEJB {
         }
     }
 
+    /**
+     * Add. an object to the database for test.
+     *
+     * @param entity the entity
+     */
+    public void add(final Object entity) {
+        em.persist(entity);
+    }
+
 }

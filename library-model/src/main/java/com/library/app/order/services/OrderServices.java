@@ -57,4 +57,11 @@ public interface OrderServices {
      */
     PaginatedData<Order> findByFilter(OrderFilter orderFilter);
 
+    /**
+     * Change status of expired orders.
+     *
+     * @param daysBeforeOrderExpiration the days before order expiration
+     */
+    void changeStatusOfExpiredOrders(int daysBeforeOrderExpiration);
+
 }
