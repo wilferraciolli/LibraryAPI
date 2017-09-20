@@ -24,8 +24,10 @@ import org.slf4j.LoggerFactory;
 import javax.annotation.Resource;
 import javax.ejb.SessionContext;
 import javax.ejb.Stateless;
-import javax.enterprise.event.Event;
 import javax.inject.Inject;
+import javax.jms.JMSConnectionFactory;
+import javax.jms.JMSContext;
+import javax.jms.Queue;
 import javax.validation.Validator;
 
 /**
@@ -46,8 +48,17 @@ public class OrderServicesImpl implements OrderServices {
     @Inject
     Validator validator;
 
+    //Inject Event to be able to send CDI events for synchronous
+//    @Inject
+//    private Event<Order> orderEventSender;
+
+    //Inject the Queue to be able to use the queue for asynchronous messages
+    @Resource(mappedName = "java:/jms/queue/Orders")
+    private Queue ordersQueue;
     @Inject
-    private Event<Order> orderEventSender;
+    @JMSConnectionFactory("java:jboss/DefaultJMSConnectionFactory")
+    private JMSContext jmsContext;
+
 
     @Resource
     SessionContext sessionContext;
@@ -162,11 +173,17 @@ public class OrderServicesImpl implements OrderServices {
 
     /**
      * Send event. This method will publish an event so decoupled objects can use it.
+     * This method uses both an event feom CDI or a message from JMS queue
      *
      * @param order the order
      */
     public void sendEvent(final Order order) {
-        orderEventSender.fire(order);
+
+        //send synchronous event
+        //orderEventSender.fire(order);
+
+        //send asynchronous message to the queue
+        jmsContext.createProducer().send(ordersQueue, order);
     }
 
 }
